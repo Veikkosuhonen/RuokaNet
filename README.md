@@ -1,29 +1,34 @@
-# RuokaNet
+# VirtualMarket
 
-Grocery-planning web app made for a database project course of University of Helsinki. 
-The language of this project and application is Finnish (code is written and documented in English). 
+A Web and database server for running a virtual game market. Made as a database course project.
 
-## Kuvaus, alustava määrittely
+## Kuvaus
 
-EDIT: Tämä idea onkin oikeastaan aika huono, tämäntapainen julkiseen käyttöön tarkoitettu palvelu rikkoo verkkokauppojen käyttöehtoja.
+(Aihe vaihdettu 20.5)
 
-RuokaNet (nimi harkinnan alla) on web-sovellus, ~~joka hakee suomalaisten ruokakauppojen tuotteiden tietoja tietokantaan~~ ja tarjoaa erilaisia työkaluja ruokasuunnitteluun.
+VirtualMarket on tietokantapalvelin pelinsisäisille virtuaalimarkkinoille. 
+Kohderyhmänä ovat lähinnä moninpelipalvelimet avoin-maailma -tyylisillä peleillä, joissa usein syntyy jonkinlainen pelaajien luoma markkinatalous.
+Tyypillisesti tälläiset markkinat muodostuvat pelaajista, heidän omistamistaan kaupoista ja kauppojen myymistä tuotteista, jotka voivat olla pelin sisäisiä esineitä tai palveluita.
+Tunnetuin ja sopivin käyttökohde on pelin Minecraft moninpelipalvelimet mutta sovellusta voitaisiin käyttää myös esimerkiksi Rust tai Garry's Mod-palvelimilla.
 
-Tässä keskeisimmät ja pelkistetyt toiminnot. 
-- ~~Sovellus tekee kyselyitä ruokakauppojen verkkosivuille ja kerää tuotetietoja.~~
-- ~~Sovellus tallentaa tiedot ruoka-aineista sekä niitä vastaavista tuotteista.~~
-- Ruoka-aineeseen liittyy ainakin nimi ja tuotteeseen nimi, hinta ja ruoka-aine.
-- ~~Käyttäjät voivat hakea tietoja kaikista tuotteista, sekä nähdä lähellään olevien kauppojen valikoiman.~~
-- Käyttäjät voivat luoda käyttäjätunnuksen ja kirjautua tunnuksella ja salasanalla.
-- Käyttäjät voivat lisätä tietokantaan reseptejä, jotka koostuvat ruoka-aineista, niiden määristä ja ohjeesta. 
-- Kaikki reseptit ovat julkisia kaikille käyttäjille, ja niitä voi hakea ainakin nimen ja ruoka-aineiden perusteella.
-- Resepti näyttää ruoka-aineiden hinnan ja määrän eri annosmäärille.
-- Käyttäjät voivat lisätä resepteihin tykkäyksiä.
-- Reseptit voidaan näyttää tykkäysmäärien järjestyksessä.
+Käytännön toteutus vaatii pelipalvelimen integroinnin tietokantapalveluun sopivalla modilla, mutta se osuus ei kuulu kurssiprojektiin. 
+Kurssia varten projektissa toteutetaankin vain abstraktit virtuaalimarkkinat, jotka eivät liity mihinkään tiettyyn peliin. 
+Tätä varten käyttäjät aloittavat pienellä määrällä abstraktia valuuttaa, ja voivat ostaa ja myydä abstrakteja, itse keksimiään tuotteita muille käyttäjille. 
+Tavallaan kyseessä on siis eräänlainen tarkoitukseton peli.
 
-Muita toiminnallisuusideoita.
-- Käyttäjät voivat antaa tuotteille sekä resepteille arvioita tähdillä (esim. kriteereillä laatu, edullisuus, eettisyys). 
-- Käyttäjät voivat kommentoida tuotteita ja reseptejä.
-- Resepteihin liittyy ominaisuuksia kuten valmistusaika ja vaativuus. 
-- Käyttäjät voivat antaa oman arvionsa reseptien ominaisuuksista. 
-- Resepti näyttää sen lisänneen käyttäjän arvion sekä muiden käyttäjien keskimääräisen arvion.
+### Perustoiminnallisuus
+- Käyttäjät voivat luoda käyttäjätilin ja kirjautua käyttäjänimellä ja salasanalla.
+- Käyttäjät voivat luoda kauppoja. Kaupoilla on nimi, perustamisaika, tuotteita sekä yksi tai useampi omistaja. 
+- Käyttäjä voi lisätä tuotteita kauppoihinsa. Tuotteella on nimi ja hinta.
+- Käyttäjä voi kutsua muita käyttäjiä kaupan omistajiksi. Kutsun voi hyväksyä tai hylätä.
+- Käyttäjä näkee kaikki luodut kaupat ja voi tarkastella niiden tietoja. 
+- Kauppoja voi etsiä nimen tai tuotteiden perusteella sekä järjestää ainakin iän mukaan.
+
+### Virtuaalimarkkinat
+- Käyttäjätilillä on virtuaalivaluuttaa, aluksi esimerkiksi 1000.0 yksikköä. 
+- Kaupoissa on tuotteita tietty lukumäärä. Aluksi tuotteita on 0. Omistajat voivat tuottaa tuotteita. 
+- Käyttäjä voi ostaa tuotteita muiden käyttäjien kaupoista. Tällöin luodaan transaktio, käyttäjän tililtä vähennetään valuuttaa ja kaupan omistajille lisätään valuuttaa. 
+- Transaktioon kuuluu ostaja, myyvä kauppa, tuote ja aikaleima.
+- Käyttäjä näkee transaktiot joissa se itse on mukana ostajana tai kaupan omistajana.
+- Käyttäjä näkee ostamansa tuotteet.
+
