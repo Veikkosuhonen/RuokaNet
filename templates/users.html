@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block title %}Users{% endblock %}
+{% block header %}Users{% endblock %}
+{% block content %}
+    {% for user in users %}
+    <a href="/users/{{ user[1] }}">{{ user[1] }}</a>
+    {% endfor %}
+{% endblock %}

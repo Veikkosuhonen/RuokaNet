@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block title %}{{ shop[1] }}{% endblock %}
+{% block header %}{{ shop[1] }}{% endblock %}
+{% block content %}
+    <p>Products: </p>
+    {% for product in products %}
+    <p>{{ product[1] }}: {{ product[2] }}</p>
+    {% if isowner %}
+    <form action="/products/{{ product[0] }}" method="POST">
+        Change price: <input type="number", name="newprice"> <input type="submit" value="submit">
+    </form>
+    {% endif %}
+    {% endfor %}
+
+    {% if isowner %}
+    <p>Add a new product</p><br>
+    <form action="/shops/{{ shop[0] }}/addproduct" method="POST">
+        <p>Product name</p><br>
+        <input type="text" name="name">
+        <p>Price</p><br>
+        <input type="number" name="price">
+        <input type="submit" value="add">
+    </form>
+    <p>Invite users</p><br>
+    <form action="/shops/{{ shop[0] }}/inviteuser" method="POST">
+        <input type="text" name="receivername">
+        <input type="submit" value="invite">
+    </form>
+    <p>Leave this shop</p>
+    <form action="/shops/{{ shop[0] }}/leave" method="POST">
+        <input type="submit" value="Leave">
+    </form>
+    {% endif %}
+
+    <p>Owners: </p>
+    {% for owner in owners %}
+    <a href="/users/{{ owner[1] }}">{{ owner[1] }}</a>
+    {% endfor %}
+{% endblock %}

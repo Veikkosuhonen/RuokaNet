@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block title %}Products{% endblock %}
+{% block header %}Products{% endblock %}
+{% block content %}
+    {% for product in products %}
+    {{ product[0] }}: {{ product[1] }}, sold at <a href="/shops/{{ product[2] }}">{{ product[3] }}</a><br>
+    {% endfor %}
+{% endblock %}

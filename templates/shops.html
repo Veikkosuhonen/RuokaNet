@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Shops{% endblock %}
+{% block header %}Shops{% endblock %}
+{% block content %}
+    {% for shop in shops %}
+        <a href="/shops/{{ shop[0] }}">{{ shop[1] }}</a> 
+        {% if shop[3] == 1 %}
+            owned by: {% for ownername in shop[2] %}{{ownername}}, {% endfor %} 
+        {% else %} 
+            (inactive) 
+        {% endif %}<br>
+    {% endfor %}
+{% endblock %}
