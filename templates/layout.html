@@ -1,0 +1,18 @@
+<!doctype html>
+<title>Virtual market - {% block title %}{% endblock %}</title>
+<h1>Virtual market</h1>
+<a href="/">Home</a> <a href="/shops">Shops</a> <a href="/products">Products</a> <a href="/users">Users</a>
+{% if session.username %}
+    Logged in as {{ session.username }} <a href="/logout">logout</a>
+    <a href="/users/{{ session.username }}">Your account</a>
+{% else %}
+    <a href="/login">Login</a>
+    <a href="/signup">Signup</a>
+{% endif %}
+
+<hr>
+    <h2>{% block header %}{% endblock %}</h2>
+    {% block content %}{% endblock %}
+<hr>
+
+<a href="https://github.com/Veikkosuhonen/VirtualMarket">source</a>
