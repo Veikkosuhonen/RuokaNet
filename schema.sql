@@ -6,13 +6,14 @@ CREATE TABLE shops (
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username TEXT,
-    password TEXT
+    password TEXT,
+    balance DECIMAL
 );
 
 CREATE TABLE products (
     id SERIAL PRIMARY KEY,
     productName TEXT,
-    price INT,
+    price DECIMAL,
     shopId INT REFERENCES shops
 );
 
@@ -37,6 +38,18 @@ CREATE TABLE invites (
     receiverid INT REFERENCES users,
     shopid INT REFERENCES shops,
     invitestatus INT
+);
+
+CREATE TABLE shop_inventory (
+    shopid INT REFERENCES shops,
+    productid INT REFERENCES products,
+    quantity INT
+);
+
+CREATE TABLE user_inventory (
+    userid INT REFERENCES users,
+    productid INT REFERENCES products,
+    quantity INT
 );
 
 /*CREATE TABLE items (

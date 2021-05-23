@@ -147,7 +147,9 @@ def shops():
 def shop(id):
     result = db.session.execute("SELECT id, shopname FROM shops WHERE id = :id", {"id":id}).fetchone()
     products = db.session.execute(
-        "SELECT products.id, products.productname, products.price FROM products WHERE products.shopid = :shopid", {"shopid":id}).fetchall()
+        """SELECT products.id, products.productname, products.price, shop_inventory.quantity 
+        FROM products, shop_inventory WHERE products.shopid = :shopid AND shop_inventory.shopid = :shopid AND shop_inventory.productid = products.id""", 
+        {"shopid":id}).fetchall()
     owners = db.session.execute(
         "SELECT users.id, users.username FROM users, shop_owners WHERE users.id = shop_owners.userid AND :shopid = shop_owners.shopid", {"shopid":id}).fetchall()
     return render_template("shop.html", shop=result, products=products, owners=owners, isowner=owns_shop(id))
@@ -176,7 +178,10 @@ PRODUCT VIEW
 """
 @app.route("/products")
 def products():
-    products = db.session.execute("SELECT products.productname, products.price, shops.id, shops.shopname FROM products, shops WHERE products.shopid = shops.id")
+    products = db.session.execute(
+        """SELECT products.productname, products.price, shops.id, shops.shopname, shop_inventory.quantity > 0 
+        FROM products, shops, shop_inventory 
+        WHERE shop_inventory.shopid = shops.id AND shop_inventory.productid = products.id""").fetchall()
     return render_template("products.html", products=products)
 
 @app.route("/shops/<int:id>/addproduct", methods=["POST"])
@@ -187,7 +192,9 @@ def add_product(id):
         abort(403)
     productname = request.form["name"]
     price = request.form["price"]
-    db.session.execute("INSERT INTO products (productname, price, shopid) VALUES (:name, :price, :id)", {"name":productname, "price":price, "id":id})
+    db.session.execute("INSERT INTO products (productname, price) VALUES (:name, :price)", {"name":productname, "price":price})
+    productid = db.session.execute("SELECT id FROM products WHERE productname = :name",{"name":productname}).fetchone()[0]
+    db.session.execute("INSERT INTO shop_inventory (shopid, productid, quantity) VALUES (:shopid, :productid, 0)",{"shopid":id, "productid":productid})
     db.session.commit()
     return redirect("/shops/" + str(id))
 
@@ -294,3 +301,21 @@ def leaveshop(id):
         db.session.execute("UPDATE shops SET active = 0 WHERE id = :id", {"id":id})
     db.session.commit()
     return redirect("/shops/" + str(id))
+
+"""
+PRODUCE PRODUCT
+"""
+@app.route("/shops/<int:shopid>/produce/<int:productid>")
+def produce(shopid, productid):
+    if not owns_shop(shopid):
+        abort(403)
+    is_shop_product = db.session.execute(
+        "SELECT products.id FROM shops, products WHERE shops.id = :shopid AND products.id = :productid AND shops.id = products.shopid",
+        {"shopid":shopid,"productid":productid}).fetchone()
+    if is_shop_product == None:
+        abort(403)
+    db.session.execute("UPDATE shop_inventory SET quantity = quantity + 1 WHERE shopid = :shopid AND productid = :productid",
+        {"shopid":shopid,"productid":productid})
+    db.session.commit()
+    return redirect("shops/" + str(shopid))
+    
