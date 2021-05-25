@@ -1,35 +1,42 @@
-CREATE TABLE shops (
-    id SERIAL PRIMARY KEY,
-    shopname TEXT
-);
-
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username TEXT,
+    username TEXT UNIQUE,
     password TEXT,
     balance DECIMAL
 );
 
+CREATE TABLE shops (
+    id SERIAL PRIMARY KEY,
+    shopname TEXT UNIQUE,
+    active INT
+);
+
+CREATE TABLE items (
+    id SERIAL PRIMARY KEY,
+    itemname TEXT
+);
+
 CREATE TABLE products (
     id SERIAL PRIMARY KEY,
-    productName TEXT,
+    itemid INT REFERENCES items,
     price DECIMAL,
     shopId INT REFERENCES shops
 );
 
 CREATE TABLE transactions (
     id SERIAL PRIMARY KEY,
+    productid INT REFERENCES products,
+    userid INT REFERENCES users,
     amount INT,
-    productId INT REFERENCES products,
-    userId INT REFERENCES users,
-    shopId INT REFERENCES shops,
-    closeTime TIMESTAMP
+    price DECIMAL,
+    closetime TIMESTAMP
 );
 
 CREATE TABLE shop_owners (
     id SERIAL PRIMARY KEY,
-    userId INT REFERENCES users,
-    shopId INT REFERENCES shops
+    userid INT REFERENCES users,
+    shopid INT REFERENCES shops,
+    UNIQUE (userid, shopid)
 );
 
 CREATE TABLE invites (
@@ -37,23 +44,20 @@ CREATE TABLE invites (
     senderid INT REFERENCES users,
     receiverid INT REFERENCES users,
     shopid INT REFERENCES shops,
-    invitestatus INT
+    invitestatus INT,
+    UNIQUE (senderid, receiverid, shopid, invitestatus)
 );
 
 CREATE TABLE shop_inventory (
     shopid INT REFERENCES shops,
-    productid INT REFERENCES products,
-    quantity INT
+    itemid INT REFERENCES items,
+    quantity INT,
+    UNIQUE (shopid, itemid)
 );
 
 CREATE TABLE user_inventory (
     userid INT REFERENCES users,
-    productid INT REFERENCES products,
-    quantity INT
+    itemid INT REFERENCES items,
+    quantity INT,
+    UNIQUE (userid, itemid)
 );
-
-/*CREATE TABLE items (
-    id SERIAL PRIMARY KEY,
-    itemname TEXT,
-);*/
-

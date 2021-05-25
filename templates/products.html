@@ -2,7 +2,27 @@
 {% block title %}Products{% endblock %}
 {% block header %}Products{% endblock %}
 {% block content %}
-    {% for product in products %}
-    {{ product[0] }}: {{ product[1] }}, sold at <a href="/shops/{{ product[2] }}">{{ product[3] }}</a><br>
-    {% endfor %}
+<div class="row m-3">
+    <h3 class="display-3">Products</h3>
+</div>
+    <table class="table table-light table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Shop</th>
+                <th scope="col">Price</th>
+                <th scope="col">Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product[0] }}</td>
+                <td><a href="/shops/{{ product[2] }}">{{ product[3] }}</a></td>
+                <td>{{ product[1] }}</td>
+                <td>{{ product[4] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

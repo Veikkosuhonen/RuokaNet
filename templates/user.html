@@ -2,24 +2,33 @@
 {% block title %}{{ user[1] }}{% endblock %}
 {% block header %}{{ user[1] }}{% endblock %}
 {% block content %}
+    {% if session.username == user[1] %}
+        <p>Your wallet balance: {{ balance }}</p>
+        <p>
+            Your inventory:
+            {% for item in inventory %}
+                {{ item[1] }} {{ item[0] }}
+            {% endfor %}
+        </p>                                    
+    {% endif %}
     <p>Shops: </p>
     {% for shop in shops %}
-    <a href="/shops/{{ shop[0] }}">{{ shop[1] }}</a>
+        <a href="/shops/{{ shop[0] }}">{{ shop[1] }}</a>
     {% endfor %}
     {% if session.username == user[1] %} 
-    <h3>Create new shop</h3>
-    <form action="/newshop" method="POST">
-        <p>Name</p><br>
-        <input type="text" name="shopname">
-        <input type="submit" value="create">
-    </form>
-    {% for incoming_invite in incoming_invites %}
-    {{ incoming_invite[1] }} has invited you to {{ incoming_invite[2] }} 
-    <form action="/invites/{{ incoming_invite[0] }}/accept" method="POST"><input type="submit" value="accept"></form>
-    <form action="/invites/{{ incoming_invite[0] }}/decline" method="POST"><input type="submit" value="decline"></form>
-    {% endfor %}
-    {% for sent_invite in sent_invites %}
-    You invited {{ sent_invite[1] }} to {{ sent_invite[2] }}
-    {% endfor %}
+        <h3>Create new shop</h3>
+        <form action="/newshop" method="POST">
+            <p>Name</p><br>
+            <input type="text" name="shopname">
+            <input type="submit" value="create">
+        </form>
+        {% for incoming_invite in incoming_invites %}
+            {{ incoming_invite[1] }} has invited you to {{ incoming_invite[2] }} 
+            <form action="/invites/{{ incoming_invite[0] }}/accept" method="POST"><input type="submit" value="accept"></form>
+            <form action="/invites/{{ incoming_invite[0] }}/decline" method="POST"><input type="submit" value="decline"></form>
+        {% endfor %}
+        {% for sent_invite in sent_invites %}
+            You invited {{ sent_invite[1] }} to {{ sent_invite[2] }}
+        {% endfor %}
     {% endif %}
 {% endblock %}

@@ -1,5 +1,24 @@
 {% extends "layout.html" %}
 {% block title %}Home{% endblock %}
-{% block header %}Welcome to VirtualMarket!{% endblock %}
 {% block content %}
+<header class="d-flex flex-column flex-md-row align-items-md-center p-5 bg-light">
+    <div class="pt-md-3 pb-md-4">
+      <h1 class="display-3 mt-0">Welcome to Virtual Market</h1>
+      <p class="">Ugazaka wagazaka ugazaka zigaziga</p>
+    </div>
+
+</header>
+<div class="container">
+    <div class="row p-2">
+        <h2 class="display-4">The market in numbers</h2>
+    </div>
+    <div class="row p-2">
+        <p>
+            Currently there are <a href="/shops" class="btn btn-light">{{stats[0]}} shops</a> 
+            operated by <a href="/users" class="btn btn-light">{{stats[1]}} people</a>
+            offering <a href="/items" class="btn btn-light">{{stats[2]}} different products</a>
+            with a total of <a href="/products" class="btn btn-light">{{stats[3]}} units</a> for sale
+        </p>
+    </div>
+</div>
 {% endblock %}
