@@ -1,15 +1,32 @@
 from app import db
 import util
 
-def get_shops():
-    all_shops = db.session.execute("SELECT id, shopname, active FROM shops").fetchall()
+def get_shops(querystring, filter):
+    sql_like_string = ""
+    sql_where_string = " TRUE"
+    sql_query_string = "SELECT shops.id, shops.shopname, shops.active FROM shops, shop_owners, users, items, products"
+    if querystring != "":
+        if filter == "shop":
+            sql_like_string += " OR LOWER(shops.shopname) LIKE LOWER(:querystring)"
+        elif filter == "owner":
+            sql_like_string += " OR LOWER(users.username) LIKE LOWER(:querystring)"
+            sql_where_string += " AND shops.id = shop_owners.shopid AND shop_owners.userid = users.id"
+        elif filter == "item":
+            sql_like_string += " OR LOWER(items.itemname) LIKE LOWER(:querystring)"
+            sql_where_string += " AND products.shopid = shops.id AND products.itemid = items.id"
+        if sql_like_string != "":
+            sql_query_string += " WHERE" + sql_where_string + " AND (FALSE" + sql_like_string + ")"
+    print(sql_query_string)
+    all_shops = db.session.execute(sql_query_string, {"querystring": "%"+ querystring +"%"}).fetchall()
+    
     shop_owners = db.session.execute("SELECT shop_owners.shopid, users.username FROM users, shop_owners WHERE users.id = shop_owners.userid").fetchall()
     # Form a list of unique shops each with a list of owners
     shops = dict()
     for s in all_shops:
         shops[s[0]] = (s[0], s[1], list(), s[2])
     for owner in shop_owners:
-        shops[owner[0]][2].append(owner[1])
+        if owner[0] in shops.keys():
+            shops[owner[0]][2].append(owner[1])
     return list(shops.values())
 
 def get_shop(id):

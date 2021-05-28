@@ -26,10 +26,22 @@ def change_product_price(productid, price):
     username = util.get_username()
     shopowner = db.session.execute(
         "SELECT shop_owners.shopid FROM users, shop_owners, products WHERE users.username = :username AND users.id = shop_owners.userid AND products.id = :productid AND products.shopid = shop_owners.shopid",
-        {"username":username, "productid":product}).fetchone()
+        {"username":username, "productid":productid}).fetchone()
     if shopowner == None:
         # Does not own the shop
         return 403
     db.session.execute("UPDATE products SET price = :newprice WHERE id = :id", {"id":productid, "newprice":price})
     db.session.commit()
-    return redirect("/shops/" + str(shopowner[0])) # shopid
+    return 200 # shopid
+
+def delete_product(productid, shopid):
+    if not util.is_user():
+        return 403
+    owns_shop_with_product = db.session.execute(
+        "SELECT product.id FROM products, shop_owners WHERE product.id = :productid AND product.shopid = :shopid AND shop_owners.userid = :userid AND shop_owners.shopid = :shopid",
+        {"productid":productid, "shopid":shopid, "userid":util.get_userid()}).fetchone()
+    if owns_shop_with_product == None:
+        return 403
+    db.session.execute("DELETE FROM products WHERE id = :id", {"id":productid})
+    db.session.commit()
+    return 200

@@ -36,7 +36,7 @@ def invite(receivername, shopid):
 def update_invite(inviteid, action):
     if not util.is_user():
         return 403
-    userid = util.get_userid(session["username"])
+    userid = util.get_userid(util.get_username())
     invite = db.session.execute("SELECT id, shopid FROM invites WHERE receiverid = :userid AND id = :inviteid AND invitestatus = 0", {"userid":userid, "inviteid":inviteid}).fetchone()
     if invite == None:
         return 404

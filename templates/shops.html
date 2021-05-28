@@ -3,56 +3,64 @@
 {% block header %}Shops{% endblock %}
 {% block content %}
 
-<nav class="navbar navbar-light bg-white border rounded shadow-sm sticky-top px-5 mb-4 row">
-    <form class="row p-2">
-        <div class="col">
+<nav class="navbar navbar-light bg-white border rounded-bottom shadow-sm sticky-top px-5 mb-4 row">
+    <form class="row justify-content-center p-2" action="/shops" method="GET">
+        <div class="col-auto">
             <h3 class="display-3 navbar-brand">Shops</h3>
         </div>
-        <div class="col">
-            <input type="radio" class="btn-check" name="option" id="options1" autocomplete="off" checked> 
+        <div class="col-auto">
+            <input type="radio" class="btn-check" name="filter" value="shop" id="options1" autocomplete="off" {% if filter=="shop" %}checked{% endif %}> 
             <label class="btn btn-outline-info" for="options1">Shop</label>
         </div>
-        <div class="col">
-            <input type="radio" class="btn-check" name="option" id="options2" autocomplete="off"> 
+        <div class="col-auto">
+            <input type="radio" class="btn-check" name="filter" value="owner" id="options2" autocomplete="off" {% if filter=="owner" %}checked{% endif %}> 
             <label class="btn btn-outline-danger" for="options2">Owner</label>
         </div>
-        <div class="col">
-            <input type="radio" class="btn-check" name="option" id="options3" autocomplete="off"> 
+        <div class="col-auto">
+            <input type="radio" class="btn-check" name="filter" value="item" id="options3" autocomplete="off" {% if filter=="item" %}checked{% endif %}> 
             <label class="btn btn-outline-success" for="options3">Item</label>
         </div>
-        <div class="col-6">
-            <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+        <div class="col-4">
+            <input class="form-control" type="text" name="query" placeholder="Search" aria-label="Search" {% if querystring != None %}value="{{querystring}}"{% endif %}>
         </div>
-        <div class="col">
+        <div class="col-auto">
             <input class="form-control btn btn-primary" type="submit" value="Go">
         </div>
     </form>
 </nav>
 
-{% for shop in shops %}
-<div class="card mb-3 shadow-sm">
-    <div class="row g-0">
-        <a class="col-1" href="/shops/{{ shop[0] }}">
-            <img src="static/img/vm.png" class="img-fluid" style="object-fit: fill; width: 100%; height: 100%; image-rendering: crisp-edges;">
-        </a>
-        <div class="col align-self-end">
-        <div class="card-body">
-            <h5 class="card-title">{{ shop[1] }}</h5>
-            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            <p class="card-text"><small class="text-muted">
-                {% if shop[3] %}
-                Owners: 
-                {% for owner in shop[2] %}
-                <b><a href="/users/{{owner}}">{{owner}}</a></b>
-                {% endfor %}
-                {% else %}
-                Inactive
-                {% endif %}
-            </small></p>
-        </div>
+<div class="container">
+    <div class="row row-cols-1 row-cols-lg-2">
+    {% for shop in shops %}
+    <div class="col">
+        <div class="card mb-3 shadow-sm">
+            <div class="row g-0">
+                <a class="col-sm-3 col-lg-2" href="/shops/{{ shop[0] }}">
+                    <img src="static/img/vm.png" class="img-fluid" style="object-fit: fill; width: 100%; height: 100%; image-rendering: crisp-edges;">
+                </a>
+                <div class="col align-self-start">
+                <div class="card-body">
+                    <h5 class="card-title">{{ shop[1] }}</h5>
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                </div>
+                <div class="card-footer text-muted">
+                    <p class="card-text"><small>
+                        {% if shop[3] %}
+                        Owners: 
+                        {% for owner in shop[2] %}
+                        <b><a href="/users/{{owner}}">{{owner}}</a></b>
+                        {% endfor %}
+                        {% else %}
+                        Inactive
+                        {% endif %}
+                    </small></p>
+                </div>
+                </div>
+            </div>
         </div>
     </div>
+    {% endfor %}
+    </div>
 </div>
-{% endfor %}
 
 {% endblock %}

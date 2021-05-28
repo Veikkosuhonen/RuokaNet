@@ -8,7 +8,7 @@ from shop import get_shops, get_shop, get_items, create_new, leave_shop
 from authentication import do_signup, do_login, do_logout
 from user import get_users, get_public_user, get_private_user
 from invite import invite, update_invite
-from product import get_products, add_product
+from product import get_products, add_product, change_product_price
 from stats import get_general_stats
 
 @app.route("/")
@@ -71,8 +71,15 @@ SHOP VIEW
 """
 @app.route("/shops")
 def shops():
-    shops = get_shops()
-    return render_template("shops.html", shops=shops, active='shops')
+    querystring = ""
+    if "query" in request.args:
+        querystring = request.args["query"]
+    filter = None
+    if "filter" in request.args:
+        filter = request.args["filter"]
+    shops = get_shops(querystring, filter)
+
+    return render_template("shops.html", shops=shops, active='shops', filter=filter, querystring=querystring)
 
 @app.route("/shops/<int:id>")
 def shop(id):
@@ -115,14 +122,16 @@ def addproduct(shopid):
         abort(code)
     return redirect("/shops/" + str(shopid))
 
-@app.route("/products/<int:id>", methods=["POST"])
-def changeproductprice(id):
-    user
-    return redirect("/shops/" + str(shopowner[0])) # shopid
+@app.route("/shops/<int:shopid>/products/<int:productid>", methods=["POST"])
+def changeproductprice(productid, shopid):
+    code = change_product_price(productid, request.form["newprice"])
+    if code != 200:
+        abort(code)
+    return redirect("/shops/" + str(shopid)) # shopid
 
-"""
-@app.route("/products/<int:id>/delete", methods=["POST"])
-def delete_product(id):
+
+@app.route("/shops/<int:shopid>/products/<int:productid>/delete", methods=["POST"])
+def deleteproduct(productid, shopid):
     if not util.is_user():
         return render_template("login.html")
     username = session["username"]
@@ -135,7 +144,7 @@ def delete_product(id):
     db.session.execute("DELETE FROM products WHERE id = :id", {"id":id})
     db.session.commit()
     return redirect("/shops/" + str(shopowner[0])) # shopid
-"""
+
 
 """
 INVITE
