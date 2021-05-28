@@ -10,7 +10,6 @@ Babel==2.4.0
 backports-abc==0.5
 backports.functools-lru-cache==1.4
 backports.shutil-get-terminal-size==1.0.0
-basemap==1.1.0
 beautifulsoup4==4.6.0
 biopython==1.70
 bleach==2.1.2
