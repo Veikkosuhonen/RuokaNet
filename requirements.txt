@@ -14,7 +14,6 @@ beautifulsoup4==4.6.0
 biopython==1.70
 bleach==2.1.2
 blinker==1.4
-bzr==2.8.0.dev1
 cajarename==17.3.28
 cbor==1.0.0
 certifi==2018.1.18
