@@ -1,6 +1,8 @@
 # VirtualMarket
 
-A Web and database server for running a virtual game market. Made as a database course project.
+A Web and database server for running a virtual game market. Made as a database course project. 
+
+Test version live at http://virtual-market.herokuapp.com.
 
 ## Kuvaus
 
@@ -17,18 +19,27 @@ Tätä varten käyttäjät aloittavat pienellä määrällä abstraktia valuutta
 Tavallaan kyseessä on siis eräänlainen tarkoitukseton peli.
 
 ### Perustoiminnallisuus
-- Käyttäjät voivat luoda käyttäjätilin ja kirjautua käyttäjänimellä ja salasanalla.
-- Käyttäjät voivat luoda kauppoja. Kaupoilla on nimi, perustamisaika, tuotteita sekä yksi tai useampi omistaja. 
-- Käyttäjä voi lisätä tuotteita kauppoihinsa. Tuotteella on nimi ja hinta.
-- Käyttäjä voi kutsua muita käyttäjiä kaupan omistajiksi. Kutsun voi hyväksyä tai hylätä.
-- Käyttäjä näkee kaikki luodut kaupat ja voi tarkastella niiden tietoja. 
-- Kauppoja voi etsiä nimen tai tuotteiden perusteella sekä järjestää ainakin iän mukaan.
+- [x] Käyttäjät voivat luoda käyttäjätilin ja kirjautua käyttäjänimellä ja salasanalla.
+- [x] Käyttäjät voivat luoda kauppoja. 
+- [ ] Kaupoilla on nimi, kuvaus, perustamisaika, tuotteita sekä yksi tai useampi omistaja. 
+- [x] Käyttäjä voi lisätä tuotteita kauppoihinsa. Tuotteella on nimi ja hinta.
+- [ ] Käyttäjä voi poistaa tuotteen valikoimasta.
+- [x] Käyttäjä voi kutsua muita käyttäjiä kaupan omistajiksi. Kutsun voi hyväksyä tai hylätä.
+- [x] Käyttäjä voi jättää kaupan omistajuuden. Jos kaupalla ei ole omistajaa, se merkitään inaktiiviseksi.
+- [x] Käyttäjä näkee kaikki luodut kaupat ja voi tarkastella niiden tietoja. 
+- [ ] Kauppoja voi etsiä nimen tai tuotteiden perusteella sekä järjestää ainakin iän mukaan.
 
 ### Virtuaalimarkkinat
-- Käyttäjätilillä on virtuaalivaluuttaa, aluksi esimerkiksi 1000.0 yksikköä. 
-- Kaupoissa on tuotteita tietty lukumäärä. Aluksi tuotteita on 0. Omistajat voivat tuottaa tuotteita. 
-- Käyttäjä voi ostaa tuotteita muiden käyttäjien kaupoista. Tällöin luodaan transaktio, käyttäjän tililtä vähennetään valuuttaa ja kaupan omistajille lisätään valuuttaa. 
-- Transaktioon kuuluu ostaja, myyvä kauppa, tuote ja aikaleima.
-- Käyttäjä näkee transaktiot joissa se itse on mukana ostajana tai kaupan omistajana.
-- Käyttäjä näkee ostamansa tuotteet.
+- [x] Käyttäjätilillä on virtuaalivaluuttaa, aluksi esimerkiksi 1000.0 yksikköä. 
+- [x] Kaupoissa on tuotteita tietty lukumäärä. Aluksi tuotteita on 0. Omistajat voivat tuottaa tuotteita. 
+- [x] Käyttäjä voi ostaa tuotteita muiden käyttäjien kaupoista. 
+- [x] Tällöin luodaan transaktio, käyttäjän tililtä vähennetään valuuttaa ja kaupan omistajille lisätään valuuttaa. 
+- [x] Transaktioon kuuluu ostaja, myyvä kauppa, tuote ja aikaleima.
+- [ ] Käyttäjä näkee transaktiot joissa se itse on mukana ostajana tai kaupan omistajana.
+- [x] Käyttäjä näkee ostamansa tuotteet.
+
+### Statistiikka
+
+### Admin-käyttäjät
+
 
