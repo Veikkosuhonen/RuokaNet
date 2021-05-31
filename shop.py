@@ -2,6 +2,10 @@ from app import db
 import util
 
 def get_shops(querystring, filter):
+    """
+    Get a list of shop-information in tuples (id, name, list_of_owners, active), filtered by querystring and filter option,
+    where the filter should either be 'shop' for shop name, 'owner' for owner name, 'item' for item sold at shop, or empty for no filter.
+    """
     sql_like_string = ""
     sql_where_string = " TRUE"
     sql_query_string = "SELECT shops.id, shops.shopname, shops.active FROM shops, shop_owners, users, items, products"
@@ -30,11 +34,15 @@ def get_shops(querystring, filter):
     return list(shops.values())
 
 def get_shop(id):
+    """
+    Finds a shop by id (return 404 if not found) and return (shop, products, owners) where shop is (id, name), 
+    products is a list [(id, itemname, price, quantity)] and owners is a list [(userid, username)]
+    """
     shop = db.session.execute("SELECT id, shopname FROM shops WHERE id = :id", {"id":id}).fetchone()
     if shop == None:
         return 404
     products = db.session.execute(
-        """SELECT products.id, items.itemname, products.price, shop_inventory.quantity 
+        """SELECT DISTINCT products.id, items.itemname, products.price, shop_inventory.quantity 
         FROM items, products, shop_inventory 
         WHERE products.shopid = :shopid AND shop_inventory.shopid = :shopid AND shop_inventory.itemid = items.id AND products.itemid = items.id""", 
         {"shopid":id}).fetchall()
@@ -43,9 +51,16 @@ def get_shop(id):
     return (shop, products, owners)
 
 def get_items():
+    """
+    Returns [(id, itemname)]
+    """
     return db.session.execute("SELECT id, itemname FROM items").fetchall()
 
 def create_new(username, shopname):
+    """
+    Creates a new shop with the name shopname and owner username. If a shop with the same name exists or the user doesn't exist, aborts and returns None,
+    else returns the id of the new shop.
+    """
     shop = db.session.execute("SELECT shopname FROM shops WHERE shopname = :name", {"name":shopname}).fetchone()
     print("creating " + shopname)
     if shop != None:
@@ -54,11 +69,16 @@ def create_new(username, shopname):
         return None
     shopid = db.session.execute("INSERT INTO shops (shopname, active) VALUES (:name, 1) RETURNING id", {"name":shopname}).fetchone()[0]
     userid = util.get_userid(username)
+    if userid == None:
+        return None
     db.session.execute("INSERT INTO shop_owners (userid, shopid) VALUES (:userid, :shopid)", {"userid":userid, "shopid":shopid})
     db.session.commit()
     return shopid
 
 def leave_shop(username, shopid):
+    """
+    Removes the owner with the given username from owners of the shop with shopid. If the shop has no more owners after this, marks the shop inactive.
+    """
     userid = util.get_userid(username)
     db.session.execute("DELETE FROM shop_owners WHERE shop_owners.userid = :userid AND shop_owners.shopid = :shopid", {"userid":userid, "shopid":shopid})
     owners = db.session.execute("SELECT shops.id FROM shops, shop_owners WHERE shops.id = shop_owners.shopid").fetchone()

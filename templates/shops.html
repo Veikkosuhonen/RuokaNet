@@ -3,7 +3,7 @@
 {% block header %}Shops{% endblock %}
 {% block content %}
 
-<nav class="navbar navbar-light bg-white border rounded-bottom shadow-sm sticky-top px-5 mb-4 row">
+<nav class="navbar navbar-light bg-white border rounded-bottom shadow-sm sticky-top px-5 mb-4 row" style="overflow-x: hidden;">
     <form class="row justify-content-center p-2" action="/shops" method="GET">
         <div class="col-auto">
             <h3 class="display-3 navbar-brand">Shops</h3>
@@ -28,6 +28,7 @@
         </div>
     </form>
 </nav>
+
 
 <div class="container">
     <div class="row row-cols-1 row-cols-lg-2">

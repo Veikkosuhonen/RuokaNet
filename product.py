@@ -7,12 +7,16 @@ def get_products():
         FROM products, shops, shop_inventory, items 
         WHERE shop_inventory.shopid = shops.id AND products.shopid = shops.id AND items.id = products.itemid""").fetchall()
 
-def add_product(shopid, itemid, price):
+def add_product(shopid, itemname, price):
     if not util.owns_shop(shopid):
         return 403
-    item = db.session.execute("SELECT id FROM items WHERE id = :itemid",{"itemid":itemid}).fetchone()
-    if item == None:
+    itemid = db.session.execute("SELECT id FROM items WHERE itemname = :itemname",{"itemname":itemname}).fetchone()
+    if itemid == None:
         return 404
+    itemid = itemid[0]
+    exists = db.session.execute("SELECT id FROM products WHERE itemid = :itemid AND shopid = :shopid", {"itemid":itemid, "shopid":shopid}).fetchone()
+    if exists != None: # shop cannot add same item for sale twice
+        return 403
     productid = db.session.execute(
         "INSERT INTO products (itemid, price, shopid) VALUES (:itemid, :price, :shopid) RETURNING id", 
         {"itemid":itemid, "price":price, "shopid":shopid}).fetchone()[0]

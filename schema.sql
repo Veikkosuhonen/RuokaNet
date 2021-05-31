@@ -20,7 +20,8 @@ CREATE TABLE products (
     id SERIAL PRIMARY KEY,
     itemid INT REFERENCES items,
     price DECIMAL,
-    shopId INT REFERENCES shops
+    shopId INT REFERENCES shops,
+    UNIQUE (itemid, shopid)
 );
 
 CREATE TABLE transactions (

@@ -1,0 +1,3 @@
+{% macro filter(list, index) %}
+    [{% for item in list %}'{{item[index]}}', {% endfor %}]
+{% endmacro %}

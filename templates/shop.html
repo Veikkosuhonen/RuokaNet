@@ -1,3 +1,4 @@
+{% import 'macros.html' as macros %}
 {% extends "layout.html" %}
 {% block title %}{{ shop[1] }}{% endblock %}
 {% block header %}{{ shop[1] }}{% endblock %}
@@ -12,9 +13,13 @@
             <small class="text-muted">Owners: </small>
             {% for owner in owners %}<a href="users/{{owner[1]}}" class="text-muted">{{owner[1]}}</a> {% endfor %}
         </div>
+        <div class="col-auto align-self-end p-2 border-bottom">
+            <small class="text-muted">Location (placeholder): </small>
+            <small class="text-muted">x: </small>101 <small class="text-muted">y: </small>70 <small class="text-muted">z: </small>233
+        </div>
     </div>
 
-    <div class="container p-2 mt-3 border rounded">
+    <div class="row p-2 px-4 mt-3 border rounded">
         <h3>Products</h3>
 
     {% for product in products %}
@@ -32,7 +37,7 @@
         <div class="col border-end">
             <form action="/shops/{{shop[0]}}/products/{{product[0]}}" method="POST" class="row">
                 <label class="col-auto col-form-label">Update price</label>
-                <input type="number" ,="" name="newprice" value="{{product[2]}}" class="form-control col">
+                <input type="number" min=0 name="newprice" value="{{product[2]}}" class="form-control col" required>
                 <input type="submit" value="update" class="form-control btn btn-outline-primary col mx-2">
             </form>
         </div>
@@ -56,32 +61,29 @@
     {% endfor %}
 
     {% if isowner %}
-    <div class="row mx-auto border rounded mb-2">
+    <div class="border rounded mb-2">
         <div class="col align-self-start">
             <div class="row mb-1 bg-light text-muted border-bottom rounded-top">
                 <small>Add new product</small>
             </div>
+            <div class="row m-2 text-danger" id="productValidationMessage"></div>
             <form action="/shops/{{shop[0]}}/addproduct" method="POST" class="row p-2">
-                <input type="text" name="itemname" value="" placeholder="item" class="form-control col mx-2">
-                <input type="number" name="price" value="" placeholder="price" class="form-control col p-2 border-end">
-                <input type="submit" value="add" class="form-control btn btn-primary col mx-2">
+                <select name="itemname" id="productItemSelect" class="form-select col mx-2" onchange="checkProduct({{ macros.filter(products, 1) }})">
+                    <option value="" selected>Select item</option>
+                    {% for item in items %}
+                    <option value="{{item[1]}}">{{item[1]}}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" min=0 required name="price" id="productPrice" value="" placeholder="price" class="form-control col p-2 border-end" onchange="checkProduct({{ macros.filter(products, 1) }})">
+                <input type="submit" value="add" id="productSubmit" class="form-control btn btn-primary col mx-2">
             </form>
+            <script src="/static/js/shop.js"></script>
         </div>
     </div>
     {% endif %}
 
     </div>
     {% if isowner %}
-    <p>Add a new product</p><br>
-    <form action="/shops/{{ shop[0] }}/addproduct" method="POST">
-        <p>Item</p><br>
-        {% for item in items %}
-        {{ item[1] }} <input type="radio" name="itemid" value="{{ item[0] }}"><br>
-        {% endfor %}
-        <p>Price</p><br>
-        <input type="number" name="price">
-        <input type="submit" value="add">
-    </form>
     <hr>
     <p>Invite users</p><br>
     <form action="/shops/{{ shop[0] }}/inviteuser" method="POST">

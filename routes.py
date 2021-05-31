@@ -117,7 +117,7 @@ def products():
 
 @app.route("/shops/<int:shopid>/addproduct", methods=["POST"])
 def addproduct(shopid):
-    code = add_product(shopid, request.form["itemid"], request.form["price"])
+    code = add_product(shopid, request.form["itemname"], request.form["price"])
     if code != 200:
         abort(code)
     return redirect("/shops/" + str(shopid))
