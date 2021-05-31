@@ -42,7 +42,7 @@ def get_shop(id):
     if shop == None:
         return 404
     products = db.session.execute(
-        """SELECT DISTINCT products.id, items.itemname, products.price, shop_inventory.quantity 
+        """SELECT products.id, items.itemname, products.price, shop_inventory.quantity 
         FROM items, products, shop_inventory 
         WHERE products.shopid = :shopid AND shop_inventory.shopid = :shopid AND shop_inventory.itemid = items.id AND products.itemid = items.id""", 
         {"shopid":id}).fetchall()

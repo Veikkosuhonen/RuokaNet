@@ -3,7 +3,7 @@ import util
 
 def get_users():
 
-    return db.session.execute("SELECT id, username, (SELECT COUNT(userid) FROM shop_owners WHERE userid = id) FROM users").fetchall()
+    return db.session.execute("SELECT id, username, (SELECT COUNT(userid) FROM shop_owners WHERE userid = users.id) FROM users").fetchall()
 
 def get_public_user(name):
     userid = util.get_userid(name)
