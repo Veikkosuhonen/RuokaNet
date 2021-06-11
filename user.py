@@ -1,5 +1,6 @@
 from app import db
 import util
+import shop
 import user_activity
 
 def get_users():
@@ -10,8 +11,7 @@ def get_public_user(name):
     userid = util.get_userid(name)
     if userid == None:
         return None
-    shops = db.session.execute(
-        "SELECT shops.id, shops.shopname FROM shops, shop_owners WHERE :userid = shop_owners.userid AND shops.id = shop_owners.shopid", {"userid":userid}).fetchall()    
+    shops = shop.get_shops(name, "owner") 
     return  {
         "user": {"id": userid, "name": name},
         "shops": shops
@@ -21,8 +21,7 @@ def get_private_user(name):
     userid = util.get_userid(name)
     if userid == None:
         return None
-    shops = db.session.execute(
-        "SELECT shops.id, shops.shopname FROM shops, shop_owners WHERE :userid = shop_owners.userid AND shops.id = shop_owners.shopid", {"userid":userid}).fetchall()
+    shops = shop.get_shops(name, "owner")
     balance = db.session.execute("SELECT balance FROM users WHERE id = :userid",{"userid":userid}).fetchone()[0]
     inventory = db.session.execute("""
         SELECT items.itemname, user_inventory.quantity FROM items, user_inventory

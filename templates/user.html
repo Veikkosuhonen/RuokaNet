@@ -14,42 +14,69 @@
             <small class="text-muted">2021-06-11</small>
         </div>
     </div>
-
-    {% if session.username == user["username"] %}
     <div class="row">
-        <p>Your wallet balance: {{ user["balance"] }}</p>
+        <div class="col">
+            <div class="row">
+                {% if session.username == user["username"] %}
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Inventory</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tr class="table-active">
+                        <td>Wallet balance</td>
+                        <td>{{ user["balance"] }}</td>
+                    </tr>
+                    {% for item in user["inventory"] %}
+                    <tr>
+                        <td>{{ item[0] }}</td>
+                        <td>{{ item[1] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>                  
+                {% endif %}
+            </div>
+        
+            <div class="row">
+                <p>Shops: </p>
+            </div>
+            <div class="row row-cols-1 row-cols-lg-2">
+            {% for shop in user["shops"] %}
+                {{ macros.shopcard(shop) }}
+            {% endfor %}
+            </div>
+        
+            {% if session.username == user["username"] %} 
+                <h3>Create new shop</h3>
+                <form action="/newshop" method="POST">
+                    <p>Name</p><br>
+                    <input type="text" name="shopname">
+                    <input type="submit" value="create">
+                </form>
+                {% for incoming_invite in user["incoming_invites"] %}
+                    {{ incoming_invite[1] }} has invited you to {{ incoming_invite[2] }} 
+                    <form action="/invites/{{ incoming_invite[0] }}/accept" method="POST"><input type="submit" value="accept"></form>
+                    <form action="/invites/{{ incoming_invite[0] }}/decline" method="POST"><input type="submit" value="decline"></form>
+                {% endfor %}
+                {% for sent_invite in user["sent_invites"] %}
+                    You invited {{ sent_invite[1] }} to {{ sent_invite[2] }}
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-4">
+            <div class="container m-2 border rounded">
+                {% for activity in user["activity"] %}
+                <div class="row border-bottom">
+                    <div class="col">{{activity[0]}}</div>
+                    <div class="col">{{activity[1]}}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-    <div class="row">
-        Your inventory:
-        {% for item in user["inventory"] %}
-            {{ item[1] }} {{ item[0] }}
-        {% endfor %}
-    </div>                      
-    {% endif %}
-
-    <div class="row">
-        <p>Shops: </p>
-    </div>
-    {% for shop in user["shops"] %}
-        {{ macros.shopcard(shop) }}
-    {% endfor %}
-
-    {% if session.username == user["username"] %} 
-        <h3>Create new shop</h3>
-        <form action="/newshop" method="POST">
-            <p>Name</p><br>
-            <input type="text" name="shopname">
-            <input type="submit" value="create">
-        </form>
-        {% for incoming_invite in user["incoming_invites"] %}
-            {{ incoming_invite[1] }} has invited you to {{ incoming_invite[2] }} 
-            <form action="/invites/{{ incoming_invite[0] }}/accept" method="POST"><input type="submit" value="accept"></form>
-            <form action="/invites/{{ incoming_invite[0] }}/decline" method="POST"><input type="submit" value="decline"></form>
-        {% endfor %}
-        {% for sent_invite in user["sent_invites"] %}
-            You invited {{ sent_invite[1] }} to {{ sent_invite[2] }}
-        {% endfor %}
-    {% endif %}
+    
 </div>
 
 {% endblock %}
