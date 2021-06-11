@@ -62,9 +62,11 @@ def user(name):
     user = None
     if util.user_is(name):
         user = get_private_user(name)
+        return render_template("private_user.html", user=user)
     else: 
         user = get_public_user(name)
-    return render_template("user.html", user=user)
+        return render_template("public_user.html", user=user)
+    
 
 """
 SHOP VIEW

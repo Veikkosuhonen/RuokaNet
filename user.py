@@ -13,7 +13,8 @@ def get_public_user(name):
         return None
     shops = shop.get_shops(name, "owner") 
     return  {
-        "user": {"id": userid, "name": name},
+        "username": name,
+        "userid": userid,
         "shops": shops
     }
 

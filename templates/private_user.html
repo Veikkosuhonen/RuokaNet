@@ -17,7 +17,6 @@
     <div class="row">
         <div class="col">
             <div class="row">
-                {% if session.username == user["username"] %}
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -36,7 +35,6 @@
                     </tr>
                     {% endfor %}
                 </table>                  
-                {% endif %}
             </div>
         
             <div class="row">
@@ -48,22 +46,21 @@
             {% endfor %}
             </div>
         
-            {% if session.username == user["username"] %} 
-                <h3>Create new shop</h3>
-                <form action="/newshop" method="POST">
-                    <p>Name</p><br>
-                    <input type="text" name="shopname">
-                    <input type="submit" value="create">
-                </form>
-                {% for incoming_invite in user["incoming_invites"] %}
-                    {{ incoming_invite[1] }} has invited you to {{ incoming_invite[2] }} 
-                    <form action="/invites/{{ incoming_invite[0] }}/accept" method="POST"><input type="submit" value="accept"></form>
-                    <form action="/invites/{{ incoming_invite[0] }}/decline" method="POST"><input type="submit" value="decline"></form>
-                {% endfor %}
-                {% for sent_invite in user["sent_invites"] %}
-                    You invited {{ sent_invite[1] }} to {{ sent_invite[2] }}
-                {% endfor %}
-            {% endif %}
+            <h3>Create new shop</h3>
+            <form action="/newshop" method="POST">
+                <p>Name</p><br>
+                <input type="text" name="shopname">
+                <input type="submit" value="create">
+            </form>
+            {% for incoming_invite in user["incoming_invites"] %}
+                {{ incoming_invite[1] }} has invited you to {{ incoming_invite[2] }} 
+                <form action="/invites/{{ incoming_invite[0] }}/accept" method="POST"><input type="submit" value="accept"></form>
+                <form action="/invites/{{ incoming_invite[0] }}/decline" method="POST"><input type="submit" value="decline"></form>
+            {% endfor %}
+            {% for sent_invite in user["sent_invites"] %}
+                You invited {{ sent_invite[1] }} to {{ sent_invite[2] }}
+            {% endfor %}
+            
         </div>
         <div class="col-4">
             <div class="container m-2 border rounded">

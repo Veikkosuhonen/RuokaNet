@@ -1,0 +1,27 @@
+{% import "macros.html" as macros %}
+{% extends "layout.html" %}
+{% block title %}{{ user["username"] }}{% endblock %}
+{% block header %}{{ user["username"] }}{% endblock %}
+{% block content %}
+
+<div class="container">
+    <div class="row p-4 bg-light border-2 border-bottom rounded-bottom shadow-sm">
+        <div class="col align-self-end p-2 border-bottom">
+            <h1 class="display-1">{{ user["username"] }}</h1>
+        </div>
+        <div class="col-auto align-self-end p-2 border-bottom">
+            <small class="text-muted">Joined (placeholder): </small>
+            <small class="text-muted">2021-06-11</small>
+        </div>
+    </div>
+    <div class="row">
+        <p>Shops: </p>
+    </div>
+    <div class="row row-cols-1 row-cols-lg-2">
+    {% for shop in user["shops"] %}
+        {{ macros.shopcard(shop) }}
+    {% endfor %}
+    </div>    
+</div>
+
+{% endblock %}
