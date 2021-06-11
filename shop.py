@@ -1,5 +1,6 @@
 from app import db
 import util
+import user_activity
 
 def get_shops(querystring, filter):
     """
@@ -20,7 +21,7 @@ def get_shops(querystring, filter):
             sql_where_string += " AND products.shopid = shops.id AND products.itemid = items.id"
         if sql_like_string != "":
             sql_query_string += " WHERE" + sql_where_string + " AND (FALSE" + sql_like_string + ")"
-    print(sql_query_string)
+    #print(sql_query_string)
     all_shops = db.session.execute(sql_query_string, {"querystring": "%"+ querystring +"%"}).fetchall()
     
     shop_owners = db.session.execute("SELECT shop_owners.shopid, users.username FROM users, shop_owners WHERE users.id = shop_owners.userid").fetchall()
@@ -72,6 +73,7 @@ def create_new(username, shopname):
     if userid == None:
         return None
     db.session.execute("INSERT INTO shop_owners (userid, shopid) VALUES (:userid, :shopid)", {"userid":userid, "shopid":shopid})
+    user_activity.add_activity(userid, f"You created {shopname}")
     db.session.commit()
     return shopid
 
@@ -85,5 +87,7 @@ def leave_shop(username, shopid):
     if owners == None:
         # shop has no owners left, mark inactive
         db.session.execute("UPDATE shops SET active = 0 WHERE id = :id", {"id":shopid})
+    shopname = db.session.execute("SELECT shopname FROM shops WHERE id = :id", {"id":shopid}).fetchone()[0]
+    user_activity.add_activity(userid, f"You left {shopname}")
     db.session.commit()
     return 200

@@ -62,3 +62,9 @@ CREATE TABLE user_inventory (
     quantity INT,
     UNIQUE (userid, itemid)
 );
+
+CREATE TABLE user_activity (
+    userid INT REFERENCES users,
+    description TEXT,
+    closetime TIMESTAMP
+)

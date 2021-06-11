@@ -59,12 +59,12 @@ def users():
 
 @app.route("/users/<string:name>")
 def user(name):
+    user = None
     if util.user_is(name):
-        user, shops, incoming_invites, sent_invites, balance, inventory = get_private_user(name)
-        return render_template("user.html", 
-            user=user, shops=shops, incoming_invites=incoming_invites, sent_invites=sent_invites, balance=balance, inventory=inventory)
-    user, shops = get_public_user(name)
-    return render_template("user.html", user=user, shops=shops)
+        user = get_private_user(name)
+    else: 
+        user = get_public_user(name)
+    return render_template("user.html", user=user)
 
 """
 SHOP VIEW

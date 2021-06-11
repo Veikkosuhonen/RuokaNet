@@ -1,6 +1,7 @@
 from flask import session
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
+import user_activity
 
 def do_signup(username, password):
     user = db.session.execute("SELECT username FROM users WHERE username = :name", {"name":username}).fetchone()
@@ -10,7 +11,8 @@ def do_signup(username, password):
         print("username taken")
         return False
     pwhash = generate_password_hash(password)
-    db.session.execute("INSERT INTO users (username, password, balance) VALUES (:name, :pwhash, 1000.0)", {"name":username, "pwhash":pwhash})
+    userid = db.session.execute("INSERT INTO users (username, password, balance) VALUES (:name, :pwhash, 1000.0) RETURNING id", {"name":username, "pwhash":pwhash})
+    user_activity.add_activity(userid, f"{username} joined VirtualMarket")
     db.session.commit()
     print("success")
     return True

@@ -1,5 +1,6 @@
 from app import db
 import util
+import user_activity
 
 def get_users():
 
@@ -11,7 +12,10 @@ def get_public_user(name):
         return None
     shops = db.session.execute(
         "SELECT shops.id, shops.shopname FROM shops, shop_owners WHERE :userid = shop_owners.userid AND shops.id = shop_owners.shopid", {"userid":userid}).fetchall()    
-    return ((userid, name), shops)
+    return  {
+        "user": {"id": userid, "name": name},
+        "shops": shops
+    }
 
 def get_private_user(name):
     userid = util.get_userid(name)
@@ -33,5 +37,15 @@ def get_private_user(name):
         {"userid":userid}).fetchall()
     pending_incoming_invites = [invite for invite in incoming_invites if invite[3] == 0]
     pending_sent_invites = [invite for invite in sent_invites if invite[3] == 0]
-    activity = [] # TODO activity (description, timestamp)
-    return ((userid, name), shops, pending_incoming_invites, pending_sent_invites, balance, inventory)
+    activity = user_activity.get_activity(userid)
+
+    return {
+        "username": name,
+        "userid": userid,
+        "shops": shops,
+        "incoming_invites": pending_incoming_invites,
+        "sent_invites": pending_sent_invites,
+        "balance": balance,
+        "inventory": inventory,
+        "activity": activity
+    }
