@@ -1,34 +1,55 @@
+{% import "macros.html" as macros %}
 {% extends "layout.html" %}
-{% block title %}{{ user[1] }}{% endblock %}
-{% block header %}{{ user[1] }}{% endblock %}
+{% block title %}{{ user["username"] }}{% endblock %}
+{% block header %}{{ user["username"] }}{% endblock %}
 {% block content %}
-    {% if session.username == user[1] %}
-        <p>Your wallet balance: {{ balance }}</p>
-        <p>
-            Your inventory:
-            {% for item in inventory %}
-                {{ item[1] }} {{ item[0] }}
-            {% endfor %}
-        </p>                                    
+
+<div class="container">
+    <div class="row p-4 bg-light border-2 border-bottom rounded-bottom shadow-sm">
+        <div class="col align-self-end p-2 border-bottom">
+            <h1 class="display-1">{{ user["username"] }}</h1>
+        </div>
+        <div class="col-auto align-self-end p-2 border-bottom">
+            <small class="text-muted">Joined (placeholder): </small>
+            <small class="text-muted">2021-06-11</small>
+        </div>
+    </div>
+
+    {% if session.username == user["username"] %}
+    <div class="row">
+        <p>Your wallet balance: {{ user["balance"] }}</p>
+    </div>
+    <div class="row">
+        Your inventory:
+        {% for item in user["inventory"] %}
+            {{ item[1] }} {{ item[0] }}
+        {% endfor %}
+    </div>                      
     {% endif %}
-    <p>Shops: </p>
-    {% for shop in shops %}
-        <a href="/shops/{{ shop[0] }}">{{ shop[1] }}</a>
+
+    <div class="row">
+        <p>Shops: </p>
+    </div>
+    {% for shop in user["shops"] %}
+        {{ macros.shopcard(shop) }}
     {% endfor %}
-    {% if session.username == user[1] %} 
+
+    {% if session.username == user["username"] %} 
         <h3>Create new shop</h3>
         <form action="/newshop" method="POST">
             <p>Name</p><br>
             <input type="text" name="shopname">
             <input type="submit" value="create">
         </form>
-        {% for incoming_invite in incoming_invites %}
+        {% for incoming_invite in user["incoming_invites"] %}
             {{ incoming_invite[1] }} has invited you to {{ incoming_invite[2] }} 
             <form action="/invites/{{ incoming_invite[0] }}/accept" method="POST"><input type="submit" value="accept"></form>
             <form action="/invites/{{ incoming_invite[0] }}/decline" method="POST"><input type="submit" value="decline"></form>
         {% endfor %}
-        {% for sent_invite in sent_invites %}
+        {% for sent_invite in user["sent_invites"] %}
             You invited {{ sent_invite[1] }} to {{ sent_invite[2] }}
         {% endfor %}
     {% endif %}
+</div>
+
 {% endblock %}
