@@ -11,7 +11,7 @@ def do_signup(username, password):
         print("username taken")
         return False
     pwhash = generate_password_hash(password)
-    userid = db.session.execute("INSERT INTO users (username, password, balance) VALUES (:name, :pwhash, 1000.0) RETURNING id", {"name":username, "pwhash":pwhash})
+    userid = db.session.execute("INSERT INTO users (username, password, balance) VALUES (:name, :pwhash, 1000.0) RETURNING id", {"name":username, "pwhash":pwhash}).fetchone()[0]
     user_activity.add_activity(userid, f"{username} joined VirtualMarket")
     db.session.commit()
     print("success")

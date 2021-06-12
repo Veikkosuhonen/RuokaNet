@@ -5,7 +5,7 @@
 {% block content %}
 
 <div class="container">
-    <div class="row p-4 bg-light border-2 border-bottom rounded-bottom shadow-sm">
+    <div class="row p-4 bg-light border-2 border-bottom rounded-bottom shadow-sm mb-4">
         <div class="col align-self-end p-2 border-bottom">
             <h1 class="display-1">{{ user["username"] }}</h1>
         </div>
@@ -16,7 +16,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <div class="row">
+            <div class="row me-1">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -60,16 +60,30 @@
             {% for sent_invite in user["sent_invites"] %}
                 You invited {{ sent_invite[1] }} to {{ sent_invite[2] }}
             {% endfor %}
-            
+
         </div>
         <div class="col-4">
-            <div class="container m-2 border rounded">
-                {% for activity in user["activity"] %}
-                <div class="row border-bottom">
-                    <div class="col">{{activity[0]}}</div>
-                    <div class="col">{{activity[1]}}</div>
+            <div class="row mb-2">
+                <div class="container border rounded">
+                    {% for activity in user["activity"] %}
+                    <div class="row border-bottom">
+                        <div class="col">{{activity["message"]}}</div>
+                        <div class="col">{{activity["date"]}}</div>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
+            </div>
+            <div class="row">
+                <div class="container border rounded">
+                    <div class="row">Transactions</div>
+                    {% for transaction in user["transactions"] %}
+                    <div class="row border-bottom">
+                        <div class="col">{{transaction["message"]}}</div>
+                        <div class="col">{{transaction["payment"]}}</div>
+                        <div class="col">{{transaction["date"]}}</div>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>

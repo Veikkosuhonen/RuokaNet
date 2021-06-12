@@ -2,6 +2,7 @@ from app import db
 import util
 import shop
 import user_activity
+import transaction
 
 def get_users():
 
@@ -38,6 +39,7 @@ def get_private_user(name):
     pending_incoming_invites = [invite for invite in incoming_invites if invite[3] == 0]
     pending_sent_invites = [invite for invite in sent_invites if invite[3] == 0]
     activity = user_activity.get_activity(userid)
+    transactions = transaction.get_transaction_activity(userid)
 
     return {
         "username": name,
@@ -47,5 +49,6 @@ def get_private_user(name):
         "sent_invites": pending_sent_invites,
         "balance": balance,
         "inventory": inventory,
-        "activity": activity
+        "activity": activity,
+        "transactions": transactions
     }

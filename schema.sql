@@ -8,7 +8,7 @@ CREATE TABLE users (
 CREATE TABLE shops (
     id SERIAL PRIMARY KEY,
     shopname TEXT UNIQUE,
-    active INT
+    n_owners INT
 );
 
 CREATE TABLE items (
@@ -26,8 +26,9 @@ CREATE TABLE products (
 
 CREATE TABLE transactions (
     id SERIAL PRIMARY KEY,
-    productid INT REFERENCES products,
+    shopid INT REFERENCES shops,
     userid INT REFERENCES users,
+    itemid INT REFERENCES items,
     amount INT,
     price DECIMAL,
     closetime TIMESTAMP

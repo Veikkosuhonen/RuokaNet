@@ -50,7 +50,7 @@ def invite(receivername, shopid):
 def update_invite(inviteid, action):
     """
     Updates the invite specified by inviteid with the given action. If action is 'accept',
-    adds the user to the owners of the shop and updates the invite status. If the action is 'decline', updates the invite status.
+    adds the user to the owners of the shop, increments the n_owners of the shop and updates the invite status. If the action is 'decline', updates the invite status.
     In both cases new user activity entries are added for the sender and the receiver, detailing the action taken by the receiver. \n
     Returns \n
     - 403 if not logged in \n
@@ -71,6 +71,7 @@ def update_invite(inviteid, action):
         newstatus = 1
         # become owner
         db.session.execute("INSERT INTO shop_owners (userid, shopid) VALUES (:userid, :shopid)", {"userid":userid,"shopid":invite[1]})
+        db.session.execute("UPDATE shops SET n_owners = n_owners + 1 WHERE id = :shopid", {"shopid":invite[1]})
         user_activity.add_activity(userid, f"You accepted {sendername}'s invite to {shopname}")
         user_activity.add_activity(invite[2], f"{username} accepted your invite to {shopname}")
     elif action == "decline":

@@ -16,7 +16,7 @@
             </div>
             <div class="card-footer text-muted">
                 <p class="card-text"><small>
-                    {% if shop[3] %}
+                    {% if shop[3] != 0 %}
                     Owners: 
                     {% for owner in shop[2] %}
                     <b><a href="/users/{{owner}}">{{owner}}</a></b>

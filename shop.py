@@ -4,12 +4,12 @@ import user_activity
 
 def get_shops(querystring, filter):
     """
-    Get a list of shop-information in tuples (id, name, list_of_owners, active), filtered by querystring and filter option,
+    Get a list of shop-information in tuples (id, name, list_of_owners, n_owners), filtered by querystring and filter option,
     where the filter should either be 'shop' for shop name, 'owner' for owner name, 'item' for item sold at shop, or empty for no filter.
     """
     sql_like_string = ""
     sql_where_string = " TRUE"
-    sql_query_string = "SELECT shops.id, shops.shopname, shops.active FROM shops, shop_owners, users, items, products"
+    sql_query_string = "SELECT shops.id, shops.shopname, shops.n_owners FROM shops, shop_owners, users, items, products"
     if querystring != "":
         if filter == "shop":
             sql_like_string += " OR LOWER(shops.shopname) LIKE LOWER(:querystring)"
@@ -68,7 +68,7 @@ def create_new(username, shopname):
         # Shopname taken
         print("shopname taken")
         return None
-    shopid = db.session.execute("INSERT INTO shops (shopname, active) VALUES (:name, 1) RETURNING id", {"name":shopname}).fetchone()[0]
+    shopid = db.session.execute("INSERT INTO shops (shopname, n_owners) VALUES (:name, 1) RETURNING id", {"name":shopname}).fetchone()[0]
     userid = util.get_userid(username)
     if userid == None:
         return None
@@ -79,15 +79,12 @@ def create_new(username, shopname):
 
 def leave_shop(username, shopid):
     """
-    Removes the owner with the given username from owners of the shop with shopid. If the shop has no more owners after this, marks the shop inactive.
+    Removes the owner with the given username from owners of the shop with shopid and decrements the n_owners of the shop.
     """
     userid = util.get_userid(username)
     db.session.execute("DELETE FROM shop_owners WHERE shop_owners.userid = :userid AND shop_owners.shopid = :shopid", {"userid":userid, "shopid":shopid})
-    owners = db.session.execute("SELECT shops.id FROM shops, shop_owners WHERE shops.id = shop_owners.shopid").fetchone()
-    if owners == None:
-        # shop has no owners left, mark inactive
-        db.session.execute("UPDATE shops SET active = 0 WHERE id = :id", {"id":shopid})
-    shopname = db.session.execute("SELECT shopname FROM shops WHERE id = :id", {"id":shopid}).fetchone()[0]
+    db.session.execute("UPDATE shops SET n_owners = n_owners - 1 WHERE id = :shopid", {"shopid": shopid})
+    shopname = db.session.execute("SELECT shopname FROM shops WHERE id = :shopid", {"shopid":shopid}).fetchone()[0]
     user_activity.add_activity(userid, f"You left {shopname}")
     db.session.commit()
     return 200
