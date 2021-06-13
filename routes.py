@@ -96,6 +96,7 @@ def shop(id):
     if result == 404:
         abort(404)
     shop, products, owners = result
+    # check if is owner and add the list of items to template
     isowner = False
     items = list()
     if util.is_user():
