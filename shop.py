@@ -33,7 +33,12 @@ def get_shops(querystring, filter):
     for owner in shop_owners:
         if owner[0] in shops.keys():
             shops[owner[0]][2].append(owner[1])
-    return list(shops.values())
+    return map(lambda s: {
+        "id":s[0],
+        "shopname":s[1],
+        "owners": s[2],
+        "n_owners": s[3]
+    }, shops.values())
 
 
 def get_shop(id):
