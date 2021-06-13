@@ -2,6 +2,7 @@ from app import db
 import util
 import user_activity
 
+
 def get_shops(querystring, filter):
     """
     Get a list of shop-information in tuples (id, name, list_of_owners, n_owners), filtered by querystring and filter option,
@@ -34,6 +35,7 @@ def get_shops(querystring, filter):
             shops[owner[0]][2].append(owner[1])
     return list(shops.values())
 
+
 def get_shop(id):
     """
     Finds a shop by id (return 404 if not found) and return (shop, products, owners) where shop is (id, name), 
@@ -51,11 +53,13 @@ def get_shop(id):
         "SELECT users.id, users.username FROM users, shop_owners WHERE users.id = shop_owners.userid AND :shopid = shop_owners.shopid", {"shopid":id}).fetchall()
     return (shop, products, owners)
 
+
 def get_items():
     """
     Returns [(id, itemname)]
     """
     return db.session.execute("SELECT id, itemname FROM items").fetchall()
+
 
 def create_new(username, shopname):
     """
@@ -76,6 +80,7 @@ def create_new(username, shopname):
     user_activity.add_activity(userid, f"You created {shopname}")
     db.session.commit()
     return shopid
+
 
 def leave_shop(username, shopid):
     """

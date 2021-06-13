@@ -2,6 +2,7 @@ from app import db
 import util
 import user_activity
 
+
 def invite(receivername, shopid):
     """
     Creates a new pending invite whose sender is the session user, receiver is specified by receivername and shop is specified by shopid.

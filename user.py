@@ -4,9 +4,10 @@ import shop
 import user_activity
 import transaction
 
-def get_users():
 
+def get_users():
     return db.session.execute("SELECT id, username, (SELECT COUNT(userid) FROM shop_owners WHERE userid = users.id) FROM users").fetchall()
+
 
 def get_public_user(name):
     userid = util.get_userid(name)
@@ -18,6 +19,7 @@ def get_public_user(name):
         "userid": userid,
         "shops": shops
     }
+
 
 def get_private_user(name):
     userid = util.get_userid(name)

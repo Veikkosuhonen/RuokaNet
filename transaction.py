@@ -1,5 +1,6 @@
 from app import db
 
+
 def produce_product(productid, userid):
     product = db.session.execute(
         "SELECT products.itemid, products.shopid FROM products, shop_owners WHERE shop_owners.userid = :userid AND shop_owners.shopid = products.shopid AND products.id = :productid",
@@ -11,6 +12,7 @@ def produce_product(productid, userid):
         {"shopid":shopid,"itemid":itemid})
     db.session.commit()
     return 200
+
 
 def do_transaction(productid, userid):
     product = db.session.execute( 
@@ -51,6 +53,7 @@ def do_transaction(productid, userid):
         {"shopid":shopid, "userid":userid, "itemid": itemid, "price":float(price)})
     db.session.commit()
     return 200
+
 
 def get_transaction_activity(userid):
     purchases = db.session.execute("""

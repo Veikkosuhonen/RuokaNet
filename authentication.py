@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 import user_activity
 
+
 def do_signup(username, password):
     user = db.session.execute("SELECT username FROM users WHERE username = :name", {"name":username}).fetchone()
     print("signing up as " + username)
@@ -34,6 +35,7 @@ def do_login(username, password):
         else:
             print("wrong password")
             return False
+
 
 def do_logout():
     del session["username"]

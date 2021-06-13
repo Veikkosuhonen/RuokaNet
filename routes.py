@@ -12,15 +12,16 @@ from invite import invite, update_invite
 from product import get_products, add_product, change_product_price
 from stats import get_general_stats
 
+
 @app.route("/")
 def index():
     stats = get_general_stats()
     return render_template("index.html", active='home', stats=stats)
 
+
 """
 AUTHENTICATION
 """ 
-
 @app.route("/signup", methods=["GET","POST"])
 def signup():
     if request.method == "GET":
@@ -46,11 +47,13 @@ def login():
             return redirect("/login")
         return redirect("/")
 
+
 @app.route("/logout")
 @login_required
 def logout():
     do_logout()
     return redirect("/")
+
 
 """
 USER VIEW
@@ -58,6 +61,7 @@ USER VIEW
 @app.route("/users")
 def users():
     return render_template("users.html", users=get_users(), active='users')
+
 
 @app.route("/users/<string:name>")
 def user(name):
@@ -85,6 +89,7 @@ def shops():
 
     return render_template("shops.html", shops=shops, active='shops', filter=filter, querystring=querystring)
 
+
 @app.route("/shops/<int:id>")
 def shop(id):
     result = get_shop(id)
@@ -101,6 +106,7 @@ def shop(id):
                 break
     return render_template("shop.html", shop=shop, products=products, owners=owners, isowner=isowner, items=items)
 
+
 @app.route("/newshop", methods=["POST"])
 @login_required
 def create_new_shop():
@@ -110,6 +116,7 @@ def create_new_shop():
         print("shopname taken")
         return redirect("/users/" + session["username"])
     return redirect("/shops/" + str(shopid))
+
 
 """
 PRODUCT VIEW
@@ -126,6 +133,7 @@ def addproduct(shopid):
     if code != 200:
         abort(code)
     return redirect("/shops/" + str(shopid))
+
 
 @app.route("/shops/<int:shopid>/products/<int:productid>", methods=["POST"])
 @login_required
@@ -171,6 +179,7 @@ def updateinvite(inviteid, action):
         abort(code)
     return redirect("/users/" + session["username"])
 
+
 """
 LEAVE SHOP
 """
@@ -182,6 +191,7 @@ def leaveshop(shopid):
         abort(code)
     return redirect("/shops/" + str(shopid))
 
+
 """
 PRODUCE PRODUCT
 """
@@ -191,6 +201,7 @@ def produce(shopid, productid):
     userid = util.get_userid(session["username"])
     produce_product(productid, userid)
     return redirect("/shops/" + str(shopid))
+
 
 """
 BUY PRODUCT

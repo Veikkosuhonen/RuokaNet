@@ -1,5 +1,6 @@
 from app import db
 
+
 def get_general_stats():
     n_shops = db.session.execute("SELECT COUNT(id) FROM shops").fetchone()[0]
     n_owners = db.session.execute("SELECT COUNT(DISTINCT userid) FROM shop_owners").fetchone()[0]
