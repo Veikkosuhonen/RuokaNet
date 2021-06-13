@@ -2,6 +2,7 @@ from flask import render_template, request, redirect, session, abort
 
 from app import app, db
 import util
+from auth_decorator import login_required
 
 from transaction import do_transaction, produce_product
 from shop import get_shops, get_shop, get_items, create_new, leave_shop
