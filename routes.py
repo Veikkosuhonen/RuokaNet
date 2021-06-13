@@ -139,8 +139,6 @@ def changeproductprice(productid, shopid):
 @app.route("/shops/<int:shopid>/products/<int:productid>/delete", methods=["POST"])
 @login_required
 def deleteproduct(productid, shopid):
-    if not util.is_user():
-        return render_template("login.html")
     username = session["username"]
     shopowner = db.session.execute(
         "SELECT shop_owners.shopid FROM users, shop_owners, products WHERE users.username = :username AND users.id = shop_owners.userid AND products.id = :productid AND products.shopid = shop_owners.shopid",
@@ -179,8 +177,6 @@ LEAVE SHOP
 @app.route("/shops/<int:shopid>/leave", methods=["POST"])
 @login_required
 def leaveshop(shopid):
-    if not util.is_user():
-        abort(403)
     code = leave_shop(session["username"], shopid)
     if code != 200:
         abort(code)
@@ -192,8 +188,6 @@ PRODUCE PRODUCT
 @app.route("/shops/<int:shopid>/produce/<int:productid>", methods=["POST"])
 @login_required
 def produce(shopid, productid):
-    if not util.is_user():
-        return render_template("login.html")
     userid = util.get_userid(session["username"])
     produce_product(productid, userid)
     return redirect("/shops/" + str(shopid))
@@ -204,8 +198,6 @@ BUY PRODUCT
 @app.route("/shops/<int:shopid>/buy/<int:productid>", methods=["POST"])
 @login_required
 def buy(shopid, productid):
-    if not util.is_user():
-        return render_template("login.html")
     if util.owns_shop(shopid): # cannot buy from self
         abort(403)
     code = do_transaction(productid, util.get_userid(session["username"]))
