@@ -19,34 +19,35 @@ def index():
 
 """
 AUTHENTICATION
-"""
-@app.route("/signup", methods=["GET"])
-def signup_page():
-    return render_template("signup.html")
+""" 
 
-@app.route("/signup", methods=["POST"])
+@app.route("/signup", methods=["GET","POST"])
 def signup():
-    username = request.form["username"]
-    password = request.form["password"]
-    success = do_signup(username, password)
-    if not success:
-        redirect("/signup")
-    return redirect("/login")
-
-@app.route("/login", methods=["GET"])
-def login_page():
-    return render_template("login.html")
-
-@app.route("/login", methods=["POST"])
-def login():
-    username = request.form["username"]
-    password = request.form["password"]
-    success = do_login(username, password)
-    if not success:
+    if request.method == "GET":
+        return render_template("signup.html")
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        success = do_signup(username, password)
+        if not success:
+            redirect("/signup")
         return redirect("/login")
-    return redirect("/")
+    
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        success = do_login(username, password)
+        if not success:
+            return redirect("/login")
+        return redirect("/")
 
 @app.route("/logout")
+@login_required
 def logout():
     do_logout()
     return redirect("/")
@@ -101,9 +102,8 @@ def shop(id):
     return render_template("shop.html", shop=shop, products=products, owners=owners, isowner=isowner, items=items)
 
 @app.route("/newshop", methods=["POST"])
+@login_required
 def create_new_shop():
-    if not util.is_user():
-        return render_template("login.html")
     shopid = create_new(session["username"], request.form["shopname"])
     if shopid == None:
         # Shopname taken
@@ -118,7 +118,9 @@ PRODUCT VIEW
 def products():
     return render_template("products.html", products=get_products(), active='products')
 
+
 @app.route("/shops/<int:shopid>/addproduct", methods=["POST"])
+@login_required
 def addproduct(shopid):
     code = add_product(shopid, request.form["itemname"], request.form["price"])
     if code != 200:
@@ -126,6 +128,7 @@ def addproduct(shopid):
     return redirect("/shops/" + str(shopid))
 
 @app.route("/shops/<int:shopid>/products/<int:productid>", methods=["POST"])
+@login_required
 def changeproductprice(productid, shopid):
     code = change_product_price(productid, request.form["newprice"])
     if code != 200:
@@ -134,6 +137,7 @@ def changeproductprice(productid, shopid):
 
 
 @app.route("/shops/<int:shopid>/products/<int:productid>/delete", methods=["POST"])
+@login_required
 def deleteproduct(productid, shopid):
     if not util.is_user():
         return render_template("login.html")
@@ -153,6 +157,7 @@ def deleteproduct(productid, shopid):
 INVITE
 """
 @app.route("/shops/<int:shopid>/inviteuser", methods=["POST"])
+@login_required
 def inviteuser(shopid):
     code = invite(request.form["receivername"], shopid)
     if code != 200:
@@ -161,6 +166,7 @@ def inviteuser(shopid):
 
 
 @app.route("/invites/<int:inviteid>/<string:action>", methods=["POST"])
+@login_required
 def updateinvite(inviteid, action):
     code = update_invite(inviteid, action)
     if code != 200:
@@ -171,6 +177,7 @@ def updateinvite(inviteid, action):
 LEAVE SHOP
 """
 @app.route("/shops/<int:shopid>/leave", methods=["POST"])
+@login_required
 def leaveshop(shopid):
     if not util.is_user():
         abort(403)
@@ -183,6 +190,7 @@ def leaveshop(shopid):
 PRODUCE PRODUCT
 """
 @app.route("/shops/<int:shopid>/produce/<int:productid>", methods=["POST"])
+@login_required
 def produce(shopid, productid):
     if not util.is_user():
         return render_template("login.html")
@@ -194,6 +202,7 @@ def produce(shopid, productid):
 BUY PRODUCT
 """
 @app.route("/shops/<int:shopid>/buy/<int:productid>", methods=["POST"])
+@login_required
 def buy(shopid, productid):
     if not util.is_user():
         return render_template("login.html")
