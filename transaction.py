@@ -78,4 +78,4 @@ def get_transaction_activity(userid):
         for itemname, shopname, price, closetime, payment in sales
     ]
     activity.sort(reverse=True, key=lambda a: a["date"])
-    return activity
+    return activity[:10]

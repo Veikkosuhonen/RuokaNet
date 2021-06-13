@@ -7,7 +7,7 @@ def get_activity(userid):
             "date": x[1]
         }, 
         db.session.execute(
-        "SELECT description, closetime FROM user_activity WHERE userid = :userid ORDER BY closetime DESC", {"userid":userid}
+        "SELECT description, closetime FROM user_activity WHERE userid = :userid ORDER BY closetime DESC LIMIT 10", {"userid":userid}
         ).fetchall())
 
 def add_activity(userid, description):
