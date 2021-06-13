@@ -17,10 +17,10 @@
         <tbody>
             {% for product in products %}
             <tr>
-                <td>{{ product[0] }}</td>
-                <td><a href="/shops/{{ product[2] }}">{{ product[3] }}</a></td>
-                <td>{{ product[1] }}</td>
-                <td>{{ product[4] }}</td>
+                <td>{{ product["itemname"] }}</td>
+                <td><a href="/shops/{{ product['shopid'] }}">{{ product["shopname"] }}</a></td>
+                <td>{{ product["price"] }}</td>
+                <td>{{ product["quantity"] }}</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -2,10 +2,17 @@ from app import db
 import util
 
 def get_products():
-    return db.session.execute(
+    return map(
+        lambda p: {
+            "itemname": p[0],
+            "price": p[1],
+            "shopid": p[2],
+            "shopname": p[3],
+            "quantity": p[4]
+        } ,db.session.execute(
         """SELECT items.itemname, products.price, shops.id, shops.shopname, shop_inventory.quantity 
         FROM products, shops, shop_inventory, items 
-        WHERE shop_inventory.shopid = shops.id AND shop_inventory.itemid = items.id AND products.shopid = shops.id AND items.id = products.itemid""").fetchall()
+        WHERE shop_inventory.shopid = shops.id AND shop_inventory.itemid = items.id AND products.shopid = shops.id AND items.id = products.itemid""").fetchall())
 
 def add_product(shopid, itemname, price):
     if not util.owns_shop(shopid):
