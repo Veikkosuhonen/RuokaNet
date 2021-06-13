@@ -14,7 +14,7 @@ def invite(receivername, shopid):
     """
     sendername = util.get_username()
     if sendername == None:
-        return 403
+        return 401
     if not util.owns_shop(shopid):
         print("doesnt own shop")
         return 403
