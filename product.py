@@ -1,6 +1,7 @@
 from app import db
 import util
 
+
 def get_products():
     return map(
         lambda p: {
@@ -13,6 +14,7 @@ def get_products():
         """SELECT items.itemname, products.price, shops.id, shops.shopname, shop_inventory.quantity 
         FROM products, shops, shop_inventory, items 
         WHERE shop_inventory.shopid = shops.id AND shop_inventory.itemid = items.id AND products.shopid = shops.id AND items.id = products.itemid""").fetchall())
+
 
 def add_product(shopid, itemname, price):
     if not util.owns_shop(shopid):
@@ -31,6 +33,7 @@ def add_product(shopid, itemname, price):
     db.session.commit()
     return 200
 
+
 def change_product_price(productid, price):
     username = util.get_username()
     shopowner = db.session.execute(
@@ -42,6 +45,7 @@ def change_product_price(productid, price):
     db.session.execute("UPDATE products SET price = :newprice WHERE id = :id", {"id":productid, "newprice":price})
     db.session.commit()
     return 200 # shopid
+
 
 def delete_product(productid, shopid):
     owns_shop_with_product = db.session.execute(
