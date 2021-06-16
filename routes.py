@@ -4,12 +4,11 @@ from app import app, db
 import util
 from auth_decorator import login_required
 
-from transaction import do_transaction, produce_product
 from shop import get_shops, get_shop, get_items, create_new, leave_shop
 from authentication import do_signup, do_login, do_logout
 from user import get_users, get_public_user, get_private_user
 from invite import invite, update_invite
-from product import get_products, add_product, change_product_price, delete_product
+from product import get_products, add_product, change_product_price, delete_product, buy_product, produce_product
 from stats import get_general_stats
 
 
@@ -204,9 +203,7 @@ BUY PRODUCT
 @app.route("/shops/<int:shopid>/buy/<int:productid>", methods=["POST"])
 @login_required
 def buy(shopid, productid):
-    if util.owns_shop(shopid): # cannot buy from self
-        abort(403)
-    code = do_transaction(productid, util.get_userid(session["username"]))
+    code = buy_product(productid)
     if code != 200:
         abort(code)
     return redirect("/shops/" + str(shopid))

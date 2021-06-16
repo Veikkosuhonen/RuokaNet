@@ -1,6 +1,6 @@
 from app import db
 import util
-
+from transaction import do_buy_transaction
 
 def get_products():
     return map(
@@ -54,5 +54,22 @@ def delete_product(productid, shopid):
     if owns_shop_with_product == None:
         return 403
     db.session.execute("DELETE FROM products WHERE id = :id", {"id":productid})
+    db.session.commit()
+    return 200
+
+
+def buy_product(productid):
+    return do_buy_transaction(productid, util.get_userid(session["username"]))
+
+
+def produce_product(productid, userid):
+    product = db.session.execute(
+        "SELECT products.itemid, products.shopid FROM products, shop_owners WHERE shop_owners.userid = :userid AND shop_owners.shopid = products.shopid AND products.id = :productid",
+        {"productid":productid,"userid":userid}).fetchone()
+    if product == None:
+        return 403
+    itemid, shopid = product
+    db.session.execute("UPDATE shop_inventory SET quantity = quantity + 1 WHERE shopid = :shopid AND itemid = :itemid",
+        {"shopid":shopid,"itemid":itemid})
     db.session.commit()
     return 200
