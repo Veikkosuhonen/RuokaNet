@@ -9,7 +9,7 @@ from shop import get_shops, get_shop, get_items, create_new, leave_shop
 from authentication import do_signup, do_login, do_logout
 from user import get_users, get_public_user, get_private_user
 from invite import invite, update_invite
-from product import get_products, add_product, change_product_price
+from product import get_products, add_product, change_product_price, delete_product
 from stats import get_general_stats
 
 
@@ -142,22 +142,16 @@ def changeproductprice(productid, shopid):
     code = change_product_price(productid, request.form["newprice"])
     if code != 200:
         abort(code)
-    return redirect("/shops/" + str(shopid)) # shopid
+    return redirect("/shops/" + str(shopid))
 
 
 @app.route("/shops/<int:shopid>/products/<int:productid>/delete", methods=["POST"])
 @login_required
 def deleteproduct(productid, shopid):
-    username = session["username"]
-    shopowner = db.session.execute(
-        "SELECT shop_owners.shopid FROM users, shop_owners, products WHERE users.username = :username AND users.id = shop_owners.userid AND products.id = :productid AND products.shopid = shop_owners.shopid",
-        {"username":username, "productid":id}).fetchone()
-    if shopowner == None:
-        # Does not own the shop
-        abort(403)
-    db.session.execute("DELETE FROM products WHERE id = :id", {"id":id})
-    db.session.commit()
-    return redirect("/shops/" + str(shopowner[0])) # shopid
+    code = delete_product(productid, shopid)
+    if code != 200:
+        abort(code)
+    return redirect("/shops/" + str(shopid))
 
 
 """
