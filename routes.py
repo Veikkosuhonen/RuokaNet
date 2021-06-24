@@ -133,7 +133,8 @@ def products():
 def addproduct(shopid):
     code = add_product(shopid, request.form["itemname"], request.form["price"])
     if code != 200:
-        abort(code)
+        flash("Error: invalid request")
+        redirect("/shops/" + str(shopid))
     return redirect("/shops/" + str(shopid))
 
 
@@ -152,7 +153,8 @@ def changeproductprice(productid, shopid):
 def deleteproduct(productid, shopid):
     code = delete_product(productid, shopid)
     if code != 200:
-        abort(code)
+        flash("Error: invalid request")
+        redirect("/shops/" + str(shopid))
     return redirect("/shops/" + str(shopid))
 
 
@@ -164,7 +166,8 @@ INVITE
 def inviteuser(shopid):
     code = invite(request.form["receivername"], shopid)
     if code != 200:
-        return abort(code)
+        flash("Error: invalid request")
+        redirect("/shops/" + str(shopid))
     return redirect("/shops/" + str(shopid))
 
 
@@ -173,7 +176,8 @@ def inviteuser(shopid):
 def updateinvite(inviteid, action):
     code = update_invite(inviteid, action)
     if code != 200:
-        abort(code)
+        flash("Error: invalid request")
+        redirect("/users/" + session["username"])
     return redirect("/users/" + session["username"])
 
 
@@ -185,7 +189,8 @@ LEAVE SHOP
 def leaveshop(shopid):
     code = leave_shop(session["username"], shopid)
     if code != 200:
-        abort(code)
+        flash("Error: invalid request")
+        redirect("/shops/" + str(shopid))
     return redirect("/shops/" + str(shopid))
 
 
@@ -208,5 +213,6 @@ BUY PRODUCT
 def buy(shopid, productid):
     code = buy_product(productid)
     if code != 200:
-        abort(code)
+        flash("Error: invalid request")
+        redirect("/shops/" + str(shopid))
     return redirect("/shops/" + str(shopid))
