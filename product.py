@@ -59,7 +59,7 @@ def delete_product(productid, shopid):
 
 
 def buy_product(productid):
-    return do_buy_transaction(productid, util.get_userid(session["username"]))
+    return do_buy_transaction(productid, util.get_userid(util.get_username()))
 
 
 def produce_product(productid, userid):
