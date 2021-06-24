@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, session, abort
+from flask import render_template, request, redirect, session, abort, flash
 
 from app import app, db
 import util
@@ -31,7 +31,8 @@ def signup():
         password = request.form["password"]
         success = do_signup(username, password)
         if not success:
-            redirect("/signup")
+            flash("Registration failed, invalid credentials")
+            return redirect("/signup")
         return redirect("/login")
     
 
@@ -44,6 +45,7 @@ def login():
         password = request.form["password"]
         success = do_login(username, password)
         if not success:
+            flash("Invalid username or password")
             return redirect("/login")
         return redirect("/")
 

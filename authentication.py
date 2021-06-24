@@ -5,6 +5,8 @@ import user_activity
 
 
 def do_signup(username, password):
+    if len(username) < 1 or len(username) > 16 or len(password) < 1 or len(password) > 16:
+        return False
     user = db.session.execute("SELECT username FROM users WHERE username = :name", {"name":username}).fetchone()
     print("signing up as " + username)
     if user != None:
