@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import session, redirect, url_for, request
+from flask import session, redirect, url_for, request, flash
 
 
 def login_required(func):
@@ -8,5 +8,6 @@ def login_required(func):
         if "username" in session:
             return func(*args, **kwargs)
         else:
+            flash("Please login to access this page")
             return redirect(url_for("login", next=request.url))
     return decorated_func

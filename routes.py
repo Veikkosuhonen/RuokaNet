@@ -116,7 +116,7 @@ def create_new_shop():
     shopid = create_new(session["username"], request.form["shopname"])
     if shopid == None:
         # Shopname taken
-        print("shopname taken")
+        flash(f"Error: shop name {request.form['shopname']} is taken")
         return redirect("/users/" + session["username"])
     return redirect("/shops/" + str(shopid))
 
@@ -143,7 +143,8 @@ def addproduct(shopid):
 def changeproductprice(productid, shopid):
     code = change_product_price(productid, request.form["newprice"])
     if code != 200:
-        abort(code)
+        flash("Error: ")
+        redirect("/shops/" + str(shopid))
     return redirect("/shops/" + str(shopid)) # shopid
 
 
