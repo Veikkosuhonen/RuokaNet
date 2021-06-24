@@ -25,7 +25,7 @@ AUTHENTICATION
 @app.route("/signup", methods=["GET","POST"])
 def signup():
     if request.method == "GET":
-        return render_template("signup.html")
+        return render_template("signup.html", usernames=list(map(lambda x: x[1], get_users())))
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]

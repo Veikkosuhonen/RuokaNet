@@ -2,13 +2,21 @@
 {% block title %}Signup{% endblock %}
 {% block header %}Signup{% endblock %}
 {% block content %}
-<form action="/signup" method="POST">
-    <p>Username:<br>
-        <input type="text" name="username">
-    </p>
-    <p>Password:<br>
-        <input type="password" name="password">
-    </p>
-    <input type="submit" value="Sign up">
-</form>
+<section class="container col-2 border rounded p-3 mt-3">
+    <h3 class="mb-3">Register</h3>
+    <form action="/signup" method="POST">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input name="username" type="username" class="form-control" id="username" oninput="checkUsername({{ usernames }})">
+            <div id="usernameHelp" class="form-text"></div>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input name="password" type="password" class="form-control" id="password" oninput="checkPassword()">
+            <div id="passwordHelp" class="form-text"></div>
+        </div>
+        <button type="submit" id="submit" class="btn btn-primary disabled">Register</button>
+    </form>
+    <script src="/static/js/signup.js"></script>
+</section>
 {% endblock %}
