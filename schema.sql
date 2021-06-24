@@ -13,7 +13,7 @@ CREATE TABLE shops (
 
 CREATE TABLE items (
     id SERIAL PRIMARY KEY,
-    itemname TEXT
+    itemname TEXT UNIQUE
 );
 
 CREATE TABLE products (
@@ -68,4 +68,12 @@ CREATE TABLE user_activity (
     userid INT REFERENCES users,
     description TEXT,
     closetime TIMESTAMP
-)
+);
+
+INSERT INTO items VALUES ('Apple');
+INSERT INTO items VALUES ('Honey');
+INSERT INTO items VALUES ('Pizza');
+INSERT INTO items VALUES ('Coin');
+INSERT INTO items VALUES ('Orange');
+INSERT INTO items VALUES ('Potato');
+INSERT INTO items VALUES ('Cookie');

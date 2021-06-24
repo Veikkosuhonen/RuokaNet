@@ -92,7 +92,10 @@ def leave_shop(username, shopid):
     Removes the owner with the given username from owners of the shop with shopid and decrements the n_owners of the shop.
     """
     userid = util.get_userid(username)
-    db.session.execute("DELETE FROM shop_owners WHERE shop_owners.userid = :userid AND shop_owners.shopid = :shopid", {"userid":userid, "shopid":shopid})
+    result = db.session.execute("DELETE FROM shop_owners WHERE userid = :userid AND shopid = :shopid RETURNING shopid", {"userid":userid, "shopid":shopid}).fetchone()
+    if result == None:
+        # Either no such shop exists or user is not an owner. 
+        return 404
     db.session.execute("UPDATE shops SET n_owners = n_owners - 1 WHERE id = :shopid", {"shopid": shopid})
     shopname = db.session.execute("SELECT shopname FROM shops WHERE id = :shopid", {"shopid":shopid}).fetchone()[0]
     user_activity.add_activity(userid, f"You left {shopname}")

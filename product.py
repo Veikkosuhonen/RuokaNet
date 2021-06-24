@@ -1,5 +1,6 @@
 from app import db
 import util
+from transaction import do_buy_transaction
 
 def get_products():
     return map(
@@ -13,6 +14,7 @@ def get_products():
         """SELECT items.itemname, products.price, shops.id, shops.shopname, shop_inventory.quantity 
         FROM products, shops, shop_inventory, items 
         WHERE shop_inventory.shopid = shops.id AND shop_inventory.itemid = items.id AND products.shopid = shops.id AND items.id = products.itemid""").fetchall())
+
 
 def add_product(shopid, itemname, price):
     if not util.owns_shop(shopid):
@@ -31,6 +33,7 @@ def add_product(shopid, itemname, price):
     db.session.commit()
     return 200
 
+
 def change_product_price(productid, price):
     username = util.get_username()
     shopowner = db.session.execute(
@@ -43,6 +46,7 @@ def change_product_price(productid, price):
     db.session.commit()
     return 200 # shopid
 
+
 def delete_product(productid, shopid):
     owns_shop_with_product = db.session.execute(
         "SELECT product.id FROM products, shop_owners WHERE product.id = :productid AND product.shopid = :shopid AND shop_owners.userid = :userid AND shop_owners.shopid = :shopid",
@@ -50,5 +54,22 @@ def delete_product(productid, shopid):
     if owns_shop_with_product == None:
         return 403
     db.session.execute("DELETE FROM products WHERE id = :id", {"id":productid})
+    db.session.commit()
+    return 200
+
+
+def buy_product(productid):
+    return do_buy_transaction(productid, util.get_userid(session["username"]))
+
+
+def produce_product(productid, userid):
+    product = db.session.execute(
+        "SELECT products.itemid, products.shopid FROM products, shop_owners WHERE shop_owners.userid = :userid AND shop_owners.shopid = products.shopid AND products.id = :productid",
+        {"productid":productid,"userid":userid}).fetchone()
+    if product == None:
+        return 403
+    itemid, shopid = product
+    db.session.execute("UPDATE shop_inventory SET quantity = quantity + 1 WHERE shopid = :shopid AND itemid = :itemid",
+        {"shopid":shopid,"itemid":itemid})
     db.session.commit()
     return 200

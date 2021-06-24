@@ -1,5 +1,6 @@
 .vscode/*
 .vscode
+pg-install.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -4,12 +4,11 @@ from app import app, db
 import util
 from auth_decorator import login_required
 
-from transaction import do_transaction, produce_product
 from shop import get_shops, get_shop, get_items, create_new, leave_shop
 from authentication import do_signup, do_login, do_logout
 from user import get_users, get_public_user, get_private_user
 from invite import invite, update_invite
-from product import get_products, add_product, change_product_price
+from product import get_products, add_product, change_product_price, delete_product, buy_product, produce_product
 from stats import get_general_stats
 
 
@@ -143,7 +142,7 @@ def addproduct(shopid):
 def changeproductprice(productid, shopid):
     code = change_product_price(productid, request.form["newprice"])
     if code != 200:
-        flash("Error: ")
+        flash("Error: invalid request")
         redirect("/shops/" + str(shopid))
     return redirect("/shops/" + str(shopid)) # shopid
 
@@ -151,16 +150,10 @@ def changeproductprice(productid, shopid):
 @app.route("/shops/<int:shopid>/products/<int:productid>/delete", methods=["POST"])
 @login_required
 def deleteproduct(productid, shopid):
-    username = session["username"]
-    shopowner = db.session.execute(
-        "SELECT shop_owners.shopid FROM users, shop_owners, products WHERE users.username = :username AND users.id = shop_owners.userid AND products.id = :productid AND products.shopid = shop_owners.shopid",
-        {"username":username, "productid":id}).fetchone()
-    if shopowner == None:
-        # Does not own the shop
-        abort(403)
-    db.session.execute("DELETE FROM products WHERE id = :id", {"id":id})
-    db.session.commit()
-    return redirect("/shops/" + str(shopowner[0])) # shopid
+    code = delete_product(productid, shopid)
+    if code != 200:
+        abort(code)
+    return redirect("/shops/" + str(shopid))
 
 
 """
@@ -213,9 +206,7 @@ BUY PRODUCT
 @app.route("/shops/<int:shopid>/buy/<int:productid>", methods=["POST"])
 @login_required
 def buy(shopid, productid):
-    if util.owns_shop(shopid): # cannot buy from self
-        abort(403)
-    code = do_transaction(productid, util.get_userid(session["username"]))
+    code = buy_product(productid)
     if code != 200:
         abort(code)
     return redirect("/shops/" + str(shopid))

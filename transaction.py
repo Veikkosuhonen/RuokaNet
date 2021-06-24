@@ -1,20 +1,8 @@
 from app import db
+import util
 
 
-def produce_product(productid, userid):
-    product = db.session.execute(
-        "SELECT products.itemid, products.shopid FROM products, shop_owners WHERE shop_owners.userid = :userid AND shop_owners.shopid = products.shopid AND products.id = :productid",
-        {"productid":productid,"userid":userid}).fetchone()
-    if product == None:
-        return 403
-    itemid, shopid = product
-    db.session.execute("UPDATE shop_inventory SET quantity = quantity + 1 WHERE shopid = :shopid AND itemid = :itemid",
-        {"shopid":shopid,"itemid":itemid})
-    db.session.commit()
-    return 200
-
-
-def do_transaction(productid, userid):
+def do_buy_transaction(productid, userid):
     product = db.session.execute( 
         """SELECT products.shopid, products.itemid, products.price, shop_inventory.quantity 
         FROM products, shop_inventory 
@@ -26,6 +14,9 @@ def do_transaction(productid, userid):
     shopid, itemid, price, quantity = product
     if quantity < 1: 
         return 404
+    owns_shop = db.session.execute("SELECT * FROM shop_owners WHERE userid = :userid AND shopid = :shopid", {"userid":userid, "shopid":shopid}).fetchone()
+    if owns_shop != None:
+        return 403 # not allowed to buy from self
 
     buyer_balance = db.session.execute("SELECT balance FROM users WHERE id = :id",{"id":userid}).fetchone()[0]
     if buyer_balance < price:
