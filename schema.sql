@@ -2,13 +2,14 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username TEXT UNIQUE,
     password TEXT,
-    balance DECIMAL
+    balance DECIMAL,
+    access_level INT DEFAULT 0
 );
 
 CREATE TABLE shops (
     id SERIAL PRIMARY KEY,
     shopname TEXT UNIQUE,
-    n_owners INT
+    n_owners INT DEFAULT 1
 );
 
 CREATE TABLE items (
@@ -46,21 +47,21 @@ CREATE TABLE invites (
     senderid INT REFERENCES users,
     receiverid INT REFERENCES users,
     shopid INT REFERENCES shops,
-    invitestatus INT,
+    invitestatus INT DEFAULT 0,
     UNIQUE (senderid, receiverid, shopid, invitestatus)
 );
 
 CREATE TABLE shop_inventory (
     shopid INT REFERENCES shops,
     itemid INT REFERENCES items,
-    quantity INT,
+    quantity INT DEFAULT 1,
     UNIQUE (shopid, itemid)
 );
 
 CREATE TABLE user_inventory (
     userid INT REFERENCES users,
     itemid INT REFERENCES items,
-    quantity INT,
+    quantity INT DEFAULT 1,
     UNIQUE (userid, itemid)
 );
 
