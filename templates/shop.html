@@ -39,6 +39,7 @@
                 <label class="col-auto col-form-label">Update price</label>
                 <input type="number" min=0 name="newprice" value="{{product[2]}}" class="form-control col" required>
                 <input type="submit" value="update" class="form-control btn btn-outline-primary col mx-2">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             </form>
         </div>
         <div class="col-auto">
@@ -46,6 +47,7 @@
                 <div class="col">
                     <input type="submit" value="produce" class="form-control btn btn-primary">
                 </div>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             </form>
         </div>
         {% elif session.username %}
@@ -54,6 +56,7 @@
                 <div class="col">
                     <input type="submit" value="buy" class="form-control btn btn-primary {% if product[3] == 0%}disabled{% endif %}">
                 </div>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             </form>
         </div>
         {% endif %}
@@ -76,6 +79,7 @@
                 </select>
                 <input type="number" min=0 required name="price" id="productPrice" value="" placeholder="price" class="form-control col p-2 border-end" onchange="checkProduct({{ macros.filter(products, 1) }})">
                 <input type="submit" value="add" id="productSubmit" class="form-control btn btn-primary col mx-2">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             </form>
             <script src="/static/js/shop.js"></script>
         </div>
@@ -89,10 +93,12 @@
     <form action="/shops/{{ shop[0] }}/inviteuser" method="POST">
         <input type="text" name="receivername">
         <input type="submit" value="invite">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     </form>
     <p>Leave this shop</p>
     <form action="/shops/{{ shop[0] }}/leave" method="POST">
         <input type="submit" value="Leave">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     </form>
     {% endif %}
 </div>

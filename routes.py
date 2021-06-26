@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, session, abort, flash
 
 from app import app, db
 import util
-from auth_decorator import login_required, access_level_required
+from auth_decorator import login_required, access_level_required, check_csrf
 
 from shop import get_shops, get_shop, get_items, create_new, leave_shop
 from authentication import do_signup, do_login, do_logout
@@ -111,6 +111,7 @@ def shop(id):
 
 @app.route("/newshop", methods=["POST"])
 @login_required
+@check_csrf
 def create_new_shop():
     shopid = create_new(session["username"], request.form["shopname"])
     if shopid == None:
@@ -130,6 +131,7 @@ def products():
 
 @app.route("/shops/<int:shopid>/addproduct", methods=["POST"])
 @login_required
+@check_csrf
 def addproduct(shopid):
     code = add_product(shopid, request.form["itemname"], request.form["price"])
     if code != 200:
@@ -140,6 +142,7 @@ def addproduct(shopid):
 
 @app.route("/shops/<int:shopid>/products/<int:productid>", methods=["POST"])
 @login_required
+@check_csrf
 def changeproductprice(productid, shopid):
     code = change_product_price(productid, request.form["newprice"])
     if code != 200:
@@ -150,6 +153,7 @@ def changeproductprice(productid, shopid):
 
 @app.route("/shops/<int:shopid>/products/<int:productid>/delete", methods=["POST"])
 @login_required
+@check_csrf
 def deleteproduct(productid, shopid):
     code = delete_product(productid, shopid)
     if code != 200:
@@ -163,6 +167,7 @@ INVITE
 """
 @app.route("/shops/<int:shopid>/inviteuser", methods=["POST"])
 @login_required
+@check_csrf
 def inviteuser(shopid):
     code = invite(request.form["receivername"], shopid)
     if code != 200:
@@ -173,6 +178,7 @@ def inviteuser(shopid):
 
 @app.route("/invites/<int:inviteid>/<string:action>", methods=["POST"])
 @login_required
+@check_csrf
 def updateinvite(inviteid, action):
     code = update_invite(inviteid, action)
     if code != 200:
@@ -186,6 +192,7 @@ LEAVE SHOP
 """
 @app.route("/shops/<int:shopid>/leave", methods=["POST"])
 @login_required
+@check_csrf
 def leaveshop(shopid):
     code = leave_shop(session["username"], shopid)
     if code != 200:
@@ -199,6 +206,7 @@ PRODUCE PRODUCT
 """
 @app.route("/shops/<int:shopid>/produce/<int:productid>", methods=["POST"])
 @login_required
+@check_csrf
 def produce(shopid, productid):
     userid = util.get_userid(session["username"])
     produce_product(productid, userid)
@@ -210,6 +218,7 @@ BUY PRODUCT
 """
 @app.route("/shops/<int:shopid>/buy/<int:productid>", methods=["POST"])
 @login_required
+@check_csrf
 def buy(shopid, productid):
     code = buy_product(productid)
     if code != 200:

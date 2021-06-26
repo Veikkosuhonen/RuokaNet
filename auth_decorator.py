@@ -27,3 +27,16 @@ def access_level_required(level=1):
                 return redirect(url_for("login"))
         return decorated_func
     return decorator
+
+
+def check_csrf(func):
+    @wraps(func)
+    def decorated_func(*args, **kwargs):
+        if request.method == "POST" and "csrf_token" in session and session["csrf_token"] == request.form["csrf_token"]:
+            return func(*args, **kwargs)
+        flash("Unauthorized")
+        if "username" in session:
+            return redirect("/")
+        else:
+            return redirect(url_for("login"))
+    return decorated_func

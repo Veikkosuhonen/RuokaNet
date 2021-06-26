@@ -51,11 +51,13 @@
                 <p>Name</p><br>
                 <input type="text" name="shopname">
                 <input type="submit" value="create">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             </form>
             {% for incoming_invite in user["incoming_invites"] %}
                 {{ incoming_invite[1] }} has invited you to {{ incoming_invite[2] }} 
                 <form action="/invites/{{ incoming_invite[0] }}/accept" method="POST"><input type="submit" value="accept"></form>
                 <form action="/invites/{{ incoming_invite[0] }}/decline" method="POST"><input type="submit" value="decline"></form>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             {% endfor %}
             {% for sent_invite in user["sent_invites"] %}
                 You invited {{ sent_invite[1] }} to {{ sent_invite[2] }}
