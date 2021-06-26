@@ -24,7 +24,7 @@ def do_signup(username, password):
 def do_login(username, password):
     print("loggin in as " + username)
 
-    user = db.session.execute("SELECT password FROM users WHERE username = :username", {"username":username}).fetchone()
+    user = db.session.execute("SELECT password, access_level FROM users WHERE username = :username", {"username":username}).fetchone()
     if user == None:
         print("username does not exist")
         return False
@@ -32,6 +32,7 @@ def do_login(username, password):
         pwhash = user[0]
         if check_password_hash(pwhash, password):
             session["username"] = username
+            session["access_level"] = user[1]
             print("success")
             return True
         else:

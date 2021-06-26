@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, session, abort, flash
 
 from app import app, db
 import util
-from auth_decorator import login_required
+from auth_decorator import login_required, access_level_required
 
 from shop import get_shops, get_shop, get_items, create_new, leave_shop
 from authentication import do_signup, do_login, do_logout
@@ -10,7 +10,7 @@ from user import get_users, get_public_user, get_private_user
 from invite import invite, update_invite
 from product import get_products, add_product, change_product_price, delete_product, buy_product, produce_product
 from stats import get_general_stats
-
+from transaction import get_transactions
 
 @app.route("/")
 def index():
@@ -216,3 +216,20 @@ def buy(shopid, productid):
         flash("Error: invalid request")
         redirect("/shops/" + str(shopid))
     return redirect("/shops/" + str(shopid))
+
+
+"""
+TRANSACTIONS
+"""
+@app.route("/transactions", methods=["GET"])
+@access_level_required
+def transactions():
+    querystring = ""
+    if "query" in request.args:
+        querystring = request.args["query"]
+    filter = None
+    if "filter" in request.args:
+        filter = request.args["filter"]
+    transactions = get_transactions(querystring, filter)
+
+    return render_template("transactions.html", transactions=transactions, active='transactions', filter=filter, querystring=querystring)

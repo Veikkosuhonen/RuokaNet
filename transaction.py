@@ -73,3 +73,20 @@ def get_transaction_activity(userid):
     ]
     activity.sort(reverse=True, key=lambda a: a["date"])
     return activity[:10]
+
+
+def get_transactions(querystring, filter):
+    result = db.session.execute("""
+        SELECT shops.shopname, users.username, items.itemname, transactions.price, transactions.amount, transactions.closetime
+        FROM transactions, shops, users, items 
+        WHERE transactions.shopid = shops.id AND transactions.userid = users.id AND transactions.itemid = items.id""").fetchall()
+    return list(map(
+        lambda t: {
+            "shopname":t[0],
+            "username":t[1],
+            "itemname":t[2],
+            "price":t[3],
+            "amount":t[4],
+            "date":t[5].strftime("%d/%m/%Y %H:%M:%S")
+        }, result
+    ))
