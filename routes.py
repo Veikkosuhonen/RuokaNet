@@ -93,20 +93,20 @@ def shops():
 
 @app.route("/shops/<int:id>")
 def shop(id):
-    result = get_shop(id)
-    if result == 404:
+    shop = get_shop(id)
+    if shop == 404:
         abort(404)
-    shop, products, owners = result
+
     # check if is owner and add the list of items to template
     isowner = False
     items = list()
     if util.is_user():
-        for owner in owners:
+        for owner in shop["owners"]:
             if owner[1] == session["username"]:
                 isowner = True
                 items = get_items()
                 break
-    return render_template("shop.html", shop=shop, products=products, owners=owners, isowner=isowner, items=items)
+    return render_template("shop.html", shop=shop, isowner=isowner, items=items)
 
 
 @app.route("/newshop", methods=["POST"])

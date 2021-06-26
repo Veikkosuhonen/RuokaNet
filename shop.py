@@ -10,7 +10,7 @@ def get_shops(querystring, filter):
     """
     sql_like_string = ""
     sql_where_string = " TRUE"
-    sql_query_string = "SELECT shops.id, shops.shopname, shops.n_owners FROM shops, shop_owners, users, items, products"
+    sql_query_string = "SELECT shops.id, shops.shopname, shops.n_owners, shops.creation_date FROM shops, shop_owners, users, items, products"
     if querystring != "":
         if filter == "shop":
             sql_like_string += " OR LOWER(shops.shopname) LIKE LOWER(:querystring)"
@@ -29,7 +29,7 @@ def get_shops(querystring, filter):
     # Form a list of unique shops each with a list of owners
     shops = dict()
     for s in all_shops:
-        shops[s[0]] = (s[0], s[1], list(), s[2])
+        shops[s[0]] = (s[0], s[1], list(), s[2], s[3])
     for owner in shop_owners:
         if owner[0] in shops.keys():
             shops[owner[0]][2].append(owner[1])
@@ -37,7 +37,8 @@ def get_shops(querystring, filter):
         "id":s[0],
         "shopname":s[1],
         "owners": s[2],
-        "n_owners": s[3]
+        "n_owners": s[3],
+        "creation_date": s[4]
     }, shops.values())
 
 
@@ -46,7 +47,7 @@ def get_shop(id):
     Finds a shop by id (return 404 if not found) and return (shop, products, owners) where shop is (id, name), 
     products is a list [(id, itemname, price, quantity)] and owners is a list [(userid, username)]
     """
-    shop = db.session.execute("SELECT id, shopname FROM shops WHERE id = :id", {"id":id}).fetchone()
+    shop = db.session.execute("SELECT id, shopname, n_owners, creation_date FROM shops WHERE id = :id", {"id":id}).fetchone()
     if shop == None:
         return 404
     products = db.session.execute(
@@ -56,7 +57,15 @@ def get_shop(id):
         {"shopid":id}).fetchall()
     owners = db.session.execute(
         "SELECT users.id, users.username FROM users, shop_owners WHERE users.id = shop_owners.userid AND :shopid = shop_owners.shopid", {"shopid":id}).fetchall()
-    return (shop, products, owners)
+    return {
+        "shopid":shop[0],
+        "shopname":shop[1],
+        "n_owners":shop[2],
+        "creation_date":shop[3],
+        "has_products": len(products) > 0,
+        "products":products,
+        "owners":owners
+    }
 
 
 def get_items():

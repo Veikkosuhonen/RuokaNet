@@ -15,16 +15,23 @@
                 <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
             </div>
             <div class="card-footer text-muted">
-                <p class="card-text"><small>
-                    {% if shop["n_owners"] != 0 %}
-                    Owners: 
-                    {% for owner in shop["owners"] %}
-                    <b><a href="/users/{{owner}}">{{owner}}</a></b>
-                    {% endfor %}
-                    {% else %}
-                    Inactive
-                    {% endif %}
-                </small></p>
+                <div class="row">
+                    <div class="col">
+                        <p class="card-text"><small>
+                            {% if shop["n_owners"] != 0 %}
+                            Owners: 
+                            {% for owner in shop["owners"] %}
+                            <b><a href="/users/{{owner}}">{{owner}}</a></b>
+                            {% endfor %}
+                            {% else %}
+                            Inactive
+                            {% endif %}
+                        </small></p>
+                    </div>
+                    <div class="col-4">
+                        <small>Est. {{ shop.creation_date }}</small>
+                    </div>
+                </div class="row">
             </div>
             </div>
         </div>

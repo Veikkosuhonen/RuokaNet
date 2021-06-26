@@ -3,13 +3,15 @@ CREATE TABLE users (
     username TEXT UNIQUE,
     password TEXT,
     balance DECIMAL,
-    access_level INT DEFAULT 0
+    access_level INT DEFAULT 0,
+    join_date DATE DEFAULT NOW()
 );
 
 CREATE TABLE shops (
     id SERIAL PRIMARY KEY,
     shopname TEXT UNIQUE,
-    n_owners INT DEFAULT 1
+    n_owners INT DEFAULT 1,
+    creation_date DATE DEFAULT NOW()
 );
 
 CREATE TABLE items (
