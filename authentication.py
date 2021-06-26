@@ -42,3 +42,4 @@ def do_login(username, password):
 
 def do_logout():
     del session["username"]
+    del session["access_level"]

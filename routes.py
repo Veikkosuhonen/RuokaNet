@@ -222,7 +222,7 @@ def buy(shopid, productid):
 TRANSACTIONS
 """
 @app.route("/transactions", methods=["GET"])
-@access_level_required
+@access_level_required(level=1)
 def transactions():
     querystring = ""
     if "query" in request.args:

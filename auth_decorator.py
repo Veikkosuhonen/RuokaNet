@@ -13,12 +13,17 @@ def login_required(func):
     return decorated_func
 
 
-def access_level_required(func, level=1):
-    @wraps(func)
-    def decorated_func(*args, **kwargs):
-        if "access_level" in session:
-            if session["access_level"] >= level:
-                return func(*args, **kwargs)
-        flash("Unauthorized")
-        return redirect(url_for("login"))
-    return decorated_func
+def access_level_required(level=1):
+    def decorator(func):
+        @wraps(func)
+        def decorated_func(*args, **kwargs):
+            if "access_level" in session:
+                if session["access_level"] >= level:
+                    return func(*args, **kwargs)
+            flash("Unauthorized")
+            if "username" in session:
+                return redirect("/")
+            else:
+                return redirect(url_for("login"))
+        return decorated_func
+    return decorator
