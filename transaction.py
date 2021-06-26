@@ -59,14 +59,14 @@ def get_transaction_activity(userid):
     activity = [
         {
             "message": f"Bought {itemname} at {shopname} for {price}",
-            "date": closetime,
+            "date": closetime.strftime("%d/%m/%Y %H:%M:%S"),
             "payment": -price
         }
         for itemname, shopname, price, closetime in purchases
     ] + [
         {
             "message": f"{shopname} sold {itemname} for {price}",
-            "date": closetime,
+            "date": closetime.strftime("%d/%m/%Y %H:%M:%S"),
             "payment": int(payment)
         }
         for itemname, shopname, price, closetime, payment in sales

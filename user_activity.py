@@ -5,7 +5,7 @@ import util
 def get_activity(userid):
     return map(lambda x: {
             "message": x[0],
-            "date": x[1]
+            "date": x[1].strftime("%d/%m/%Y %H:%M:%S")
         }, 
         db.session.execute(
         "SELECT description, closetime FROM user_activity WHERE userid = :userid ORDER BY closetime DESC LIMIT 10", {"userid":userid}
