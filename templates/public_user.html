@@ -5,11 +5,11 @@
 {% block content %}
 
 <div class="container">
-    <div class="row p-4 bg-dark border-2 border-bottom rounded-bottom shadow-sm">
-        <div class="col align-self-end p-2 border-bottom">
+    <div class="row p-4 bg-dark border-secondary border-bottom rounded-bottom shadow-sm">
+        <div class="col align-self-end p-2 border-bottom border-secondary">
             <h1 class="display-1">{{ user["username"] }}</h1>
         </div>
-        <div class="col-auto align-self-end p-2 border-bottom">
+        <div class="col-auto align-self-end p-2 border-bottom border-secondary">
             <small class="text-muted">Joined: </small>
             <small class="text-muted">{{ user.join_date }}</small>
         </div>
@@ -26,9 +26,9 @@
     {% if access_level in session and session.access_level > 0%}
     <div class="row">
         <div class="row mb-2">
-            <div class="container border rounded">
+            <div class="container border border-2 border-dark rounded">
                 {% for activity in user["activity"] %}
-                <div class="row border-bottom">
+                <div class="row border-bottom border-dark">
                     <div class="col">{{activity["message"]}}</div>
                     <div class="col">{{activity["date"]}}</div>
                 </div>
@@ -36,10 +36,10 @@
             </div>
         </div>
         <div class="row">
-            <div class="container border rounded">
+            <div class="container border border-2 border-dark rounded">
                 <div class="row">Transactions</div>
                 {% for transaction in user["transactions"] %}
-                <div class="row border-bottom">
+                <div class="row border-bottom border-dark">
                     <div class="col">{{transaction["message"]}}</div>
                     <div class="col">{{transaction["payment"]}}</div>
                     <div class="col">{{transaction["date"]}}</div>

@@ -5,11 +5,11 @@
 {% block content %}
 
 <div class="container">
-    <div class="row p-4 bg-dark border-2 border-bottom rounded-bottom shadow-sm mb-4">
-        <div class="col align-self-end p-2 border-bottom">
+    <div class="row p-4 bg-dark border-bottom border-secondary rounded-bottom shadow-sm mb-4">
+        <div class="col align-self-end p-2 border-bottom border-secondary">
             <h1 class="display-1">{{ user["username"] }}</h1>
         </div>
-        <div class="col-auto align-self-end p-2 border-bottom">
+        <div class="col-auto align-self-end p-2 border-bottom border-secondary">
             <small class="text-muted">Joined: </small>
             <small class="text-muted">{{ user.join_date }}</small>
         </div>
@@ -17,7 +17,7 @@
     <div class="row">
         <div class="col">
             <div class="row me-1">
-                <table class="table table-bordered">
+                <table class="table table-bordered table-hover">
                     <thead>
                         <tr>
                             <th scope="col">Inventory</th>
@@ -30,7 +30,7 @@
                     </tr>
                     {% for item in user["inventory"] %}
                     <tr>
-                        <td>{{ item[0] }}</td>
+                        <td class="text-success">{{ item[0] }}</td>
                         <td>{{ item[1] }}</td>
                     </tr>
                     {% endfor %}
@@ -45,36 +45,46 @@
                 {{ macros.shopcard(shop) }}
             {% endfor %}
             </div>
-        
-            <h3>Create new shop</h3>
-            <form action="/newshop" method="POST">
-                <p>Name</p><br>
-                <input type="text" name="shopname" maxlength="16">
-                <input type="submit" value="create">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-            </form>
-            {% for incoming_invite in user["incoming_invites"] %}
-                {{ incoming_invite[1] }} has invited you to {{ incoming_invite[2] }} 
-                <form action="/invites/{{ incoming_invite[0] }}/accept" method="POST">
-                    <input type="submit" value="accept">
+            
+            <div class="container mt-3 border border-2 border-dark rounded">
+                <form action="/newshop" method="POST" class="row p-2">
+                    <h3>Create new shop</h3>
+                    <input type="text" name="shopname" placeholder="shop name" maxlength="16" minlength="1" class="form-control col mx-2" id="shopname">
+                    <input type="submit" value="create" class="btn btn-primary col-auto mr-2">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 </form>
-                <form action="/invites/{{ incoming_invite[0] }}/decline" method="POST">
-                    <input type="submit" value="decline">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                </form>
+            </div>
 
-            {% endfor %}
-            {% for sent_invite in user["sent_invites"] %}
-                You invited {{ sent_invite[1] }} to {{ sent_invite[2] }}
-            {% endfor %}
+            <div class="container mt-3 border border-2 border-dark rounded">
+                <div class="row p-2"><h3>Incoming invites</h3></div>
+                {% for incoming_invite in user["incoming_invites"] %}
+                <div class="row p-2 border border-dark rounded">
+                    <span class="text-success col">{{ incoming_invite[1] }} has invited you to {{ incoming_invite[2] }}</span>
+                    <form action="/invites/{{ incoming_invite[0] }}/accept" method="POST" class="col-auto">
+                        <input type="submit" value="accept" class="btn btn-success">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    </form>
+                    <form action="/invites/{{ incoming_invite[0] }}/decline" method="POST" class="col-auto">
+                        <input type="submit" value="decline" class="btn btn-danger">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    </form>
+                </div>
+                {% endfor %}
+                
+                <div class="row p-2"><h3>Sent pending invites</h3></div>
+                {% for sent_invite in user["sent_invites"] %}
+                <div class="row p-2 border border-dark rounded">
+                    <span class="text-primary">You invited {{ sent_invite[1] }} to {{ sent_invite[2] }}</span>
+                </div>
+                {% endfor %}
+            </div>
 
         </div>
         <div class="col-4">
-            <div class="row mb-2">
-                <div class="container border rounded">
+            <div class="row mb-4">
+                <div class="container shadow-sm rounded">
                     {% for activity in user["activity"] %}
-                    <div class="row border-bottom">
+                    <div class="row border-bottom border-dark">
                         <div class="col">{{activity["message"]}}</div>
                         <div class="col">{{activity["date"]}}</div>
                     </div>
@@ -82,10 +92,10 @@
                 </div>
             </div>
             <div class="row">
-                <div class="container border rounded">
+                <div class="container shadow-sm rounded">
                     <div class="row">Transactions</div>
                     {% for transaction in user["transactions"] %}
-                    <div class="row border-bottom">
+                    <div class="row border-bottom border-dark">
                         <div class="col">{{transaction["message"]}}</div>
                         <div class="col">{{transaction["payment"]}}</div>
                         <div class="col">{{transaction["date"]}}</div>

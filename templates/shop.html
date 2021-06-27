@@ -4,11 +4,11 @@
 {% block header %}{{ shop.shopname }}{% endblock %}
 {% block content %}
 <div class="container">
-    <div class="row p-4 bg-dark border-2 border-bottom rounded-bottom shadow-sm">
+    <div class="row p-4 bg-dark border-1 border-bottom rounded-bottom border-secondary shadow-sm">
         <div class="col-2">
             <img src="/static/img/vm.png" class="img-fluid rounded" style="object-fit: fill; width: 100%; height: 100%; image-rendering: crisp-edges; image-rendering: pixelated;">
         </div>
-        <div class="col align-self-end p-2 border-bottom">
+        <div class="col align-self-end p-2 border-bottom border-dark">
             <h1 class="display-1">{{ shop.shopname }}</h1>
             {% if shop.n_owners > 0 %}
             <small class="text-muted">Owners: </small>
@@ -17,12 +17,12 @@
             <small>Inactive</small>
             {% endif %}
         </div>
-        <div class="col-auto align-self-end p-2 border-bottom">
+        <div class="col-auto align-self-end p-2 border-bottom border-dark">
             <small class="text-muted">Established: {{ shop.creation_date }}</small>
         </div>
     </div>
 
-    <div class="row p-2 px-4 mt-3 border rounded">
+    <div class="row p-2 px-4 mt-3 border border-2 border-dark rounded">
         {% if shop.has_products %}
         <h3>Products</h3>
         {% else %}
@@ -30,18 +30,18 @@
         {% endif %}
     
     {% for product in shop.products %}
-    <div class="row mx-auto p-1 border rounded mb-3">
-        <div class="col p-2 border-end">
+    <div class="row mx-auto p-1 border rounded border-dark mb-3">
+        <div class="col p-2 border-end border-dark">
             <span class="text-muted">item: </span>{{product[1]}}
         </div>
-        <div class="col p-2 border-end">
+        <div class="col p-2 border-end border-dark">
             <span class="text-muted">price: </span>{{product[2]}}
         </div>
-        <div class="col p-2 border-end">
+        <div class="col p-2 border-end border-dark">
             {{product[3]}}<span class="text-muted"> in stock</span>
         </div>
         {% if isowner %}
-        <div class="col border-end">
+        <div class="col border-end border-dark">
             <form action="/shops/{{ shop.shopid }}/products/{{product[0]}}" method="POST" class="row">
                 <label class="col-auto col-form-label">Update price</label>
                 <input type="number" min=0 maxlength="16" name="newprice" value="{{product[2]}}" class="form-control col" required>
@@ -71,9 +71,9 @@
     {% endfor %}
     
     {% if isowner %}
-    <div class="border rounded mb-2">
+    <div class="border border-2 border-dark rounded mb-2">
         <div class="col align-self-start">
-            <div class="row mb-1 bg-dark text-muted border-bottom rounded-top">
+            <div class="row mb-1 bg-dark text-muted border-bottom border-dark rounded-top">
                 <small>Add new product</small>
             </div>
             <div class="row m-2 text-danger" id="productValidationMessage"></div>
@@ -84,7 +84,7 @@
                     <option value="{{item[1]}}">{{item[1]}}</option>
                     {% endfor %}
                 </select>
-                <input type="number" min=0 required name="price" id="productPrice" value="" placeholder="price" class="form-control col p-2 border-end" onchange="checkProduct({{ macros.filter(shop.products, 1) }})">
+                <input type="number" min=0 required name="price" id="productPrice" value="" placeholder="price" class="form-control col p-2 border-end border-dark" onchange="checkProduct({{ macros.filter(shop.products, 1) }})">
                 <input type="submit" value="add" id="productSubmit" class="form-control btn btn-primary col mx-2">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             </form>
@@ -95,8 +95,8 @@
     </div>
 
     {% if isowner %}
-    <div class="border rounded mt-4 p-4">
-        <form action="/shops/{{ shop.shopid }}/inviteuser" method="POST" class="row border rounded p-2 mb-3">
+    <div class="border border-2 border-dark rounded mt-4 p-4">
+        <form action="/shops/{{ shop.shopid }}/inviteuser" method="POST" class="row border border-dark rounded p-2 mb-3">
             <label class="col-2 col-form-label">Invite users to shop</label>
             <input type="text" name="receivername" id="receivername" maxLength="16" class="form-control col" oninput="checkInvite({{ macros.filter(shop.owners, 1) }})">
             <input type="submit" value="invite"  id="inviteSubmit" class="btn btn-primary disabled col-2 mx-2">
@@ -104,7 +104,7 @@
         </form>
         <script src="/static/js/create_invite.js"></script>
 
-        <form action="/shops/{{ shop.shopid }}/leave" method="POST" class="row border rounded p-2" onsubmit="return leaveSubmit( {{ shop.n_owners }} )">
+        <form action="/shops/{{ shop.shopid }}/leave" method="POST" class="row border border-dark rounded p-2" onsubmit="return leaveSubmit( {{ shop.n_owners }} )">
             <label class="col-2 col-form-label">Leave this shop</label>
             <input type="submit" value="Leave" class="btn btn-danger col-2">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
