@@ -23,7 +23,7 @@
     {% endfor %}
     </div>
     
-    {% if session.access_level > 0%}
+    {% if access_level in session and session.access_level > 0%}
     <div class="row">
         <div class="row mb-2">
             <div class="container border rounded">
