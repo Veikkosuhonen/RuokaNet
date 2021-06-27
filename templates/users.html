@@ -5,7 +5,7 @@
 <div class="row m-3">
     <h3 class="display-3">Users</h3>
 </div>
-<table class="table table-bordered">
+<table class="table">
     <thead>
         <tr>
             <th scope="col">User</th>
@@ -15,8 +15,8 @@
     <tbody>
         {% for user in users %}
         <tr>
-            <td><a href="/users/{{ user[1] }}">{{ user[1] }}</a></td>
-            <td>{{ user[2] }}</td>
+            <td><a href="/users/{{ user[1] }}" class="btn btn-light">{{ user[1] }}</a></td>
+            <td><a href="/shops?query={{user[1]}}&filter=owner" class="btn btn-light">{{ user[2] }}</a></td>
         </tr>
         {% endfor %}
     </tbody>

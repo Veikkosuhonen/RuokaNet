@@ -6,7 +6,7 @@
     <h3 class="display-3">Transactions</h3>
     <small>This page is only visible to special users with access level > 0</small>
 </div>
-    <table class="table table-light table-hover">
+    <table class="table">
         <thead>
             <tr>
                 <th scope="col">Shop</th>
@@ -20,9 +20,9 @@
         <tbody>
             {% for transaction in transactions %}
             <tr>
-                <td><a href="/shops/1">{{ transaction["shopname"] }}</a></td>
-                <td>{{ transaction["username"] }}</td>
-                <td>{{ transaction["itemname"] }}</td>
+                <td><a href="/shops/{{transaction.shopid}}" class="btn btn-light">{{ transaction["shopname"] }}</a></td>
+                <td><a href="/shops?query={{transaction['username']}}&filter=owner" class="btn btn-light">{{ transaction["username"] }}</a></td>
+                <td><a href="/shops?query={{ transaction.itemname }}&filter=item" class="btn btn-light">{{ transaction.itemname }}</a></td>
                 <td>{{ transaction["price"] }}</td>
                 <td>{{ transaction["amount"] }}</td>
                 <td>{{ transaction["date"] }}</td>

@@ -78,16 +78,17 @@ def get_transaction_activity(userid):
 
 def get_transactions(querystring, filter):
     result = db.session.execute("""
-        SELECT shops.shopname, users.username, items.itemname, transactions.price, transactions.amount, transactions.closetime
+        SELECT shops.id, shops.shopname, users.username, items.itemname, transactions.price, transactions.amount, transactions.closetime
         FROM transactions, shops, users, items 
         WHERE transactions.shopid = shops.id AND transactions.userid = users.id AND transactions.itemid = items.id""").fetchall()
     return list(map(
         lambda t: {
-            "shopname":t[0],
-            "username":t[1],
-            "itemname":t[2],
-            "price":t[3],
-            "amount":t[4],
-            "date":t[5].strftime("%d/%m/%Y %H:%M:%S")
+            "shopid":t[0],
+            "shopname":t[1],
+            "username":t[2],
+            "itemname":t[3],
+            "price":t[4],
+            "amount":t[5],
+            "date":t[6].strftime("%d/%m/%Y %H:%M:%S")
         }, result
     ))

@@ -12,6 +12,7 @@ from invite import invite, update_invite
 from product import get_products, add_product, change_product_price, delete_product, buy_product, produce_product
 from stats import get_general_stats
 from transaction import get_transactions
+from items import get_items
 
 
 @app.route("/")
@@ -71,7 +72,16 @@ def user(name):
     else: 
         user = get_public_user(name)
         return render_template("public_user.html", user=user)
-    
+
+
+"""
+ITEMS
+"""
+@app.route("/items")
+def items():
+    items = get_items()
+    return render_template("items.html", items=items, active='items')
+
 
 """
 SHOP VIEW

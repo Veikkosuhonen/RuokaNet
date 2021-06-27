@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Items{% endblock %}
+{% block header %}Items{% endblock %}
+{% block content %}
+<div class="row m-3">
+    <h3 class="display-3">Items</h3>
+</div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Lowest price</th>
+                <th scope="col">Total units for sale</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td><a href="/shops?query={{ item.itemname }}&filter=item" class="btn btn-light">{{ item["itemname"] }}</a></td>
+                <td>{{ item["min_price"] }}</td>
+                <td>{{ item["total_units"] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
