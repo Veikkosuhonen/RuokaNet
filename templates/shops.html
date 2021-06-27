@@ -22,7 +22,7 @@
             <label class="btn btn-outline-success" for="options3">Item</label>
         </div>
         <div class="col-4">
-            <input class="form-control" type="text" name="query" placeholder="Search" aria-label="Search" {% if querystring != None %}value="{{querystring}}"{% endif %}>
+            <input class="form-control" type="text" name="query" maxLength="16" placeholder="Search" aria-label="Search" {% if querystring != None %}value="{{querystring}}"{% endif %}>
         </div>
         <div class="col-auto">
             <input class="form-control btn btn-primary" type="submit" value="Go">

@@ -44,7 +44,7 @@
         <div class="col border-end">
             <form action="/shops/{{ shop.shopid }}/products/{{product[0]}}" method="POST" class="row">
                 <label class="col-auto col-form-label">Update price</label>
-                <input type="number" min=0 name="newprice" value="{{product[2]}}" class="form-control col" required>
+                <input type="number" min=0 maxlength="16" name="newprice" value="{{product[2]}}" class="form-control col" required>
                 <input type="submit" value="update" class="form-control btn btn-outline-primary col mx-2">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             </form>
@@ -98,7 +98,7 @@
     <div class="border rounded mt-4 p-4">
         <form action="/shops/{{ shop.shopid }}/inviteuser" method="POST" class="row border rounded p-2 mb-3">
             <label class="col-2 col-form-label">Invite users to shop</label>
-            <input type="text" name="receivername" id="receivername" class="form-control col" oninput="checkInvite({{ macros.filter(shop.owners, 1) }})">
+            <input type="text" name="receivername" id="receivername" maxLength="16" class="form-control col" oninput="checkInvite({{ macros.filter(shop.owners, 1) }})">
             <input type="submit" value="invite"  id="inviteSubmit" class="btn btn-primary disabled col-2 mx-2">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         </form>

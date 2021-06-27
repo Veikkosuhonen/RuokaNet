@@ -49,7 +49,7 @@
             <h3>Create new shop</h3>
             <form action="/newshop" method="POST">
                 <p>Name</p><br>
-                <input type="text" name="shopname">
+                <input type="text" name="shopname" maxlength="16">
                 <input type="submit" value="create">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             </form>
