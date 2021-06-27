@@ -116,7 +116,7 @@ def shop_view(id):
 @login_required
 @check_csrf
 def create_new_shop():
-    shopid = shop.create_new(session["username"], request.form["shopname"])
+    shopid = shop.create_new(request.form["shopname"])
     return redirect("/shops/" + str(shopid))
 
 
