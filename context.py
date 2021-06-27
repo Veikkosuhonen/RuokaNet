@@ -5,3 +5,5 @@ from flask import session
 def inject_csrf_token():
     if "csrf_token" in session:
         return dict(csrf_token=session["csrf_token"])
+    else:
+        return dict()

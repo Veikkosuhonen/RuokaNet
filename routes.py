@@ -1,6 +1,7 @@
 from flask import render_template, request, redirect, session, abort, flash
 
 from app import app, db
+from error import ErrorMessage
 import util
 from auth_decorator import login_required, access_level_required, check_csrf
 
@@ -30,8 +31,7 @@ def signup():
         password = request.form["password"]
         success = do_signup(username, password)
         if not success:
-            flash("Registration failed, invalid credentials")
-            return redirect("/signup")
+            raise ErrorMessage("Registration failed, invalid credentials", next="/signup")
         return redirect("/login")
     
 
@@ -44,8 +44,7 @@ def login():
         password = request.form["password"]
         success = do_login(username, password)
         if not success:
-            flash("Invalid username or password")
-            return redirect("/login")
+            raise ErrorMessage("Invalid username or password", next="/login")
         return redirect("/")
 
 
@@ -116,8 +115,7 @@ def create_new_shop():
     shopid = create_new(session["username"], request.form["shopname"])
     if shopid == None:
         # Shopname taken
-        flash(f"Error: shop name {request.form['shopname']} is taken")
-        return redirect("/users/" + session["username"])
+        raise ErrorMessage(f"Error: shop name {request.form['shopname']} is taken", next="/users/" + session["username"])
     return redirect("/shops/" + str(shopid))
 
 
@@ -135,8 +133,7 @@ def products():
 def addproduct(shopid):
     code = add_product(shopid, request.form["itemname"], request.form["price"])
     if code != 200:
-        flash("Error: invalid request")
-        redirect("/shops/" + str(shopid))
+        abort(code)
     return redirect("/shops/" + str(shopid))
 
 
@@ -146,8 +143,7 @@ def addproduct(shopid):
 def changeproductprice(productid, shopid):
     code = change_product_price(productid, request.form["newprice"])
     if code != 200:
-        flash("Error: invalid request")
-        redirect("/shops/" + str(shopid))
+        abort(code)
     return redirect("/shops/" + str(shopid)) # shopid
 
 
@@ -157,8 +153,7 @@ def changeproductprice(productid, shopid):
 def deleteproduct(productid, shopid):
     code = delete_product(productid, shopid)
     if code != 200:
-        flash("Error: invalid request")
-        redirect("/shops/" + str(shopid))
+        abort(code)
     return redirect("/shops/" + str(shopid))
 
 
@@ -169,10 +164,12 @@ INVITE
 @login_required
 @check_csrf
 def inviteuser(shopid):
-    code = invite(request.form["receivername"], shopid)
+    username = request.form["receivername"]
+    code = invite(username, shopid)
     if code != 200:
-        flash("Error: invalid request")
-        redirect("/shops/" + str(shopid))
+        if code == 404:
+            raise ErrorMessage(f"404: User '{username}' not found", next="/shops/" + str(shopid))
+        abort(code)
     return redirect("/shops/" + str(shopid))
 
 
@@ -182,8 +179,7 @@ def inviteuser(shopid):
 def updateinvite(inviteid, action):
     code = update_invite(inviteid, action)
     if code != 200:
-        flash("Error: invalid request")
-        redirect("/users/" + session["username"])
+        abort(code)
     return redirect("/users/" + session["username"])
 
 
@@ -196,8 +192,7 @@ LEAVE SHOP
 def leaveshop(shopid):
     code = leave_shop(session["username"], shopid)
     if code != 200:
-        flash("Error: invalid request")
-        redirect("/shops/" + str(shopid))
+        abort(code)
     return redirect("/shops/" + str(shopid))
 
 
@@ -222,8 +217,7 @@ BUY PRODUCT
 def buy(shopid, productid):
     code = buy_product(productid)
     if code != 200:
-        flash("Error: invalid request")
-        redirect("/shops/" + str(shopid))
+        abort(code)
     return redirect("/shops/" + str(shopid))
 
 

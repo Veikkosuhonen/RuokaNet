@@ -22,9 +22,12 @@
         </div>
     </div>
 
-    {% if shop.has_products %}
     <div class="row p-2 px-4 mt-3 border rounded">
+        {% if shop.has_products %}
         <h3>Products</h3>
+        {% else %}
+        No products
+        {% endif %}
     
     {% for product in shop.products %}
     <div class="row mx-auto p-1 border rounded mb-3">
@@ -66,9 +69,7 @@
         {% endif %}
     </div>
     {% endfor %}
-    {% else %}
-    No products
-    {% endif %}
+    
     {% if isowner %}
     <div class="border rounded mb-2">
         <div class="col align-self-start">
@@ -91,21 +92,28 @@
         </div>
     </div>
     {% endif %}
-
     </div>
+
     {% if isowner %}
-    <hr>
-    <p>Invite users</p><br>
-    <form action="/shops/{{ shop.shopid }}/inviteuser" method="POST">
-        <input type="text" name="receivername">
-        <input type="submit" value="invite">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-    </form>
-    <p>Leave this shop</p>
-    <form action="/shops/{{ shop.shopid }}/leave" method="POST">
-        <input type="submit" value="Leave">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-    </form>
+    <div class="border rounded mt-4 p-4">
+        <form action="/shops/{{ shop.shopid }}/inviteuser" method="POST" class="row border rounded p-2 mb-3">
+            <label class="col-2 col-form-label">Invite users to shop</label>
+            <input type="text" name="receivername" id="receivername" class="form-control col" oninput="checkInvite({{ macros.filter(shop.owners, 1) }})">
+            <input type="submit" value="invite"  id="inviteSubmit" class="btn btn-primary disabled col-2 mx-2">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        </form>
+        <script src="/static/js/create_invite.js"></script>
+
+        <form action="/shops/{{ shop.shopid }}/leave" method="POST" class="row border rounded p-2" onsubmit="return leaveSubmit( {{ shop.n_owners }} )">
+            <label class="col-2 col-form-label">Leave this shop</label>
+            <input type="submit" value="Leave" class="btn btn-danger col-2">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        </form>
+        <script src="/static/js/leave.js"></script>
+    </div>
     {% endif %}
+
 </div>
+
+
 {% endblock %}

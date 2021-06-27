@@ -22,7 +22,6 @@ def invite(receivername, shopid):
     if sendername == receivername:
         print("cannot invite self")
         return 403
-    print("inviting " + receivername + " for shop " + str(shopid))
     receiver = db.session.execute( # get the receiver who is not an owner nor has an invite to the shop
         """SELECT U.id 
         FROM users U, shop_owners S 
@@ -33,7 +32,7 @@ def invite(receivername, shopid):
         AND U.id NOT IN (SELECT users.id FROM users, invites WHERE users.id = invites.receiverid AND invites.shopid = :shopid AND invites.invitestatus = 0)""",
         {"username":receivername, "shopid":shopid}).fetchone()
     if receiver == None:
-        # TODO handle receiver already owner, receiver already invited, receiver does not exist
+        # TODO handle receiver already owner, receiver already invited, receiver does not exist (checked in browser)
         return 404
     receiverid = receiver[0]
     senderid = util.get_userid(sendername)
