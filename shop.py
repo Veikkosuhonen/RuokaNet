@@ -69,13 +69,6 @@ def get_shop(id):
     }
 
 
-def get_items():
-    """
-    Returns [(id, itemname)]
-    """
-    return db.session.execute("SELECT id, itemname FROM items").fetchall()
-
-
 def create_new(shopname):
     """
     Creates a new shop with the name shopname and owner username. If a shop with the same name exists or the user doesn't exist, aborts and returns None,

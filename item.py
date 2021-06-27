@@ -13,3 +13,10 @@ def get_items():
         "min_price":i[1],
         "total_units":i[2]
     }, items))
+
+
+def get_items_id_name():
+    """
+    Returns [(id, itemname)]
+    """
+    return db.session.execute("SELECT id, itemname FROM items").fetchall()
