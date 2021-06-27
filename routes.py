@@ -168,7 +168,9 @@ def inviteuser(shopid):
     code = invite(username, shopid)
     if code != 200:
         if code == 404:
-            raise ErrorMessage(f"404: User '{username}' not found", next="/shops/" + str(shopid))
+            raise ErrorMessage(f"User '{username}' not found", next="/shops/" + str(shopid))
+        elif code == 406:
+            raise ErrorMessage(f"User '{username}' already has an active invite to this shop", next="/shops/" + str(shopid))
         abort(code)
     return redirect("/shops/" + str(shopid))
 

@@ -8,33 +8,32 @@ def invite(receivername, shopid):
     Creates a new pending invite whose sender is the session user, receiver is specified by receivername and shop is specified by shopid.
     Adds entries for the sender and the receiver user activity detailing who was invited by whom to which shop.\n
     Returns \n
-    - 403 if not logged in or receivername equals session username \n
-    - 404 if the receiver cannot be found, the shop cannot be found, the sender is not an owner of the shop, the receiver already is an owner or the receiver already
-    has a pending invite to the shop from the sender\n
-    - 200 if the operation succeeds \n
+    - 401 if not logged in \n
+    - 403 if receivername equals session username, user doesnt own the shop or receiver owns the shop \n
+    - 404 if the receiver cannot be found\n
+    - 406 if the receiver has already has an active invite\n
+    - 200 if the operation succeeds
     """
     sendername = util.get_username()
     if sendername == None:
-        return 401
+        return 401 # should never happen
     if not util.owns_shop(shopid):
         print("doesnt own shop")
-        return 403
+        return 403 # can happen if browser validation fails
     if sendername == receivername:
         print("cannot invite self")
-        return 403
-    receiver = db.session.execute( # get the receiver who is not an owner nor has an invite to the shop
-        """SELECT U.id 
-        FROM users U, shop_owners S 
-        WHERE U.username = :username 
-        /* receiver not an owner of the shop */
-        AND U.id = S.userid AND NOT S.shopid = :shopid 
-        /* receiver does not have an active invite to the shop */
-        AND U.id NOT IN (SELECT users.id FROM users, invites WHERE users.id = invites.receiverid AND invites.shopid = :shopid AND invites.invitestatus = 0)""",
-        {"username":receivername, "shopid":shopid}).fetchone()
-    if receiver == None:
-        # TODO handle receiver already owner, receiver already invited, receiver does not exist (checked in browser)
-        return 404
-    receiverid = receiver[0]
+        return 403 # can happen if browser validation fails
+    receiverid = util.get_userid(receivername)
+    if receiverid == None:
+        return 404 # happens commonly
+    is_invited = db.session.execute("""
+        SELECT invites.id FROM invites WHERE invites.receiverid = :receiverid AND invites.shopid = :shopid AND invites.invitestatus = 0""", 
+        {"receiverid":receiverid,"shopid":shopid}).fetchone()
+    if is_invited != None:
+        return 406 # happens commonly
+    if util.owns_shop(receiverid):
+        return 403 # can happen if browser validation fails
+
     senderid = util.get_userid(sendername)
     db.session.execute(
         "INSERT INTO invites (senderid, receiverid, shopid, invitestatus) VALUES (:senderid, :receiverid, :shopid, 0)",
