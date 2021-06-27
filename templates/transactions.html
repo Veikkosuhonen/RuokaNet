@@ -20,9 +20,9 @@
         <tbody>
             {% for transaction in transactions %}
             <tr>
-                <td><a href="/shops/{{transaction.shopid}}" class="btn btn-light">{{ transaction["shopname"] }}</a></td>
-                <td><a href="/shops?query={{transaction['username']}}&filter=owner" class="btn btn-light">{{ transaction["username"] }}</a></td>
-                <td><a href="/shops?query={{ transaction.itemname }}&filter=item" class="btn btn-light">{{ transaction.itemname }}</a></td>
+                <td><a href="/shops/{{transaction.shopid}}" class="btn btn-info">{{ transaction["shopname"] }}</a></td>
+                <td><a href="/shops?query={{transaction['username']}}&filter=owner" class="btn btn-danger">{{ transaction["username"] }}</a></td>
+                <td><a href="/shops?query={{ transaction.itemname }}&filter=item" class="btn btn-success">{{ transaction.itemname }}</a></td>
                 <td>{{ transaction["price"] }}</td>
                 <td>{{ transaction["amount"] }}</td>
                 <td>{{ transaction["date"] }}</td>

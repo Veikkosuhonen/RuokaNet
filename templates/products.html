@@ -17,8 +17,8 @@
         <tbody>
             {% for product in products %}
             <tr>
-                <td><a href="/shops?query={{ product.itemname }}&filter=item" class="btn btn-light">{{ product["itemname"] }}</a></td>
-                <td><a href="/shops/{{ product['shopid'] }}" class="btn btn-light">{{ product["shopname"] }}</a></td>
+                <td><a href="/shops?query={{ product.itemname }}&filter=item" class="btn btn-success">{{ product["itemname"] }}</a></td>
+                <td><a href="/shops/{{ product['shopid'] }}" class="btn btn-info">{{ product["shopname"] }}</a></td>
                 <td>{{ product["price"] }}</td>
                 <td>{{ product["quantity"] }}</td>
             </tr>

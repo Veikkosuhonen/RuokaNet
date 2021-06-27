@@ -4,9 +4,9 @@
 {% block header %}{{ shop.shopname }}{% endblock %}
 {% block content %}
 <div class="container">
-    <div class="row p-4 bg-light border-2 border-bottom rounded-bottom shadow-sm">
+    <div class="row p-4 bg-dark border-2 border-bottom rounded-bottom shadow-sm">
         <div class="col-2">
-            <img src="/static/img/vm.png" class="img-fluid rounded" style="object-fit: fill; width: 100%; height: 100%; image-rendering: crisp-edges;">
+            <img src="/static/img/vm.png" class="img-fluid rounded" style="object-fit: fill; width: 100%; height: 100%; image-rendering: crisp-edges; image-rendering: pixelated;">
         </div>
         <div class="col align-self-end p-2 border-bottom">
             <h1 class="display-1">{{ shop.shopname }}</h1>
@@ -73,7 +73,7 @@
     {% if isowner %}
     <div class="border rounded mb-2">
         <div class="col align-self-start">
-            <div class="row mb-1 bg-light text-muted border-bottom rounded-top">
+            <div class="row mb-1 bg-dark text-muted border-bottom rounded-top">
                 <small>Add new product</small>
             </div>
             <div class="row m-2 text-danger" id="productValidationMessage"></div>

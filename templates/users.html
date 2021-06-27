@@ -15,8 +15,8 @@
     <tbody>
         {% for user in users %}
         <tr>
-            <td><a href="/users/{{ user[1] }}" class="btn btn-light">{{ user[1] }}</a></td>
-            <td><a href="/shops?query={{user[1]}}&filter=owner" class="btn btn-light">{{ user[2] }}</a></td>
+            <td><a href="/users/{{ user[1] }}" class="btn btn-danger">{{ user[1] }}</a></td>
+            <td><a href="/shops?query={{user[1]}}&filter=owner" class="btn btn-info">{{ user[2] }}</a></td>
         </tr>
         {% endfor %}
     </tbody>
