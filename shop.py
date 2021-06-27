@@ -74,13 +74,14 @@ def create_new(shopname):
     Creates a new shop with the name shopname and owner username. If a shop with the same name exists or the user doesn't exist, aborts and returns None,
     else returns the id of the new shop.
     """
+    username = util.get_username()
     next = "/users/" + username
     shop = db.session.execute("SELECT shopname FROM shops WHERE shopname = :name", {"name":shopname}).fetchone()
     print("creating " + shopname)
     if shop != None:
         raise ErrorMessage(f"Shop name '{shopname}' is taken", next=next)
     shopid = db.session.execute("INSERT INTO shops (shopname, n_owners) VALUES (:name, 1) RETURNING id", {"name":shopname}).fetchone()[0]
-    userid = util.get_userid(util.get_userid)
+    userid = util.get_userid(username)
     if userid == None:
         abort(401) # should never happen
     db.session.execute("INSERT INTO shop_owners (userid, shopid) VALUES (:userid, :shopid)", {"userid":userid, "shopid":shopid})
