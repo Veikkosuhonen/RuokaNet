@@ -2,7 +2,7 @@
 
 A Web and database server for running a virtual game market. Made as a database course project. 
 
-Development version live at http://virtual-market.herokuapp.com.
+Development version live at http://virtual-market.herokuapp.com. 
 
 
 ## Kuvaus
@@ -17,7 +17,7 @@ Näissä pelimarkkinoissa ei siis tälläisenään ole mitään järkeä mutta s
 ### Perustoiminnallisuus
 - [x] Käyttäjät voivat luoda käyttäjätilin ja kirjautua käyttäjänimellä ja salasanalla.
 - [x] Käyttäjät voivat luoda kauppoja. 
-- [ ] Kaupoilla on nimi, kuvaus, perustamisaika, tuotteita sekä yksi tai useampi omistaja. 
+- [x] Kaupoilla on nimi, ~~kuvaus~~, perustamisaika, tuotteita sekä yksi tai useampi omistaja. 
 - [x] Pelissä on valmiiksi määritelty joukko esineitä.
 - [x] Käyttäjä voi lisätä tuotteita kauppoihinsa. Tuotteella on nimi, hinta ja se vastaa jotakin esinettä.
 - [ ] Käyttäjä voi poistaa tuotteen valikoimasta.
@@ -40,13 +40,20 @@ Näissä pelimarkkinoissa ei siis tälläisenään ole mitään järkeä mutta s
 - [x] Etusivulta näkee kauppojen, kauppojen omistajien ja myytävien esineiden lukumäärä.
 
 ### Admin-käyttäjät
-- [ ] Käyttäjällä voi olla admin-oikeudet
-- [ ] Admin-käyttäjä näkee kaikki transaktiot ja voi hakea niitä aikaväliltä
+- [x] Käyttäjällä voi olla admin-oikeudet
+- [x] Admin-käyttäjä näkee kaikki transaktiot ja ~~voi hakea niitä aikaväliltä~~
+- [ ] Admin-käyttäjä voi poistaa kauppoja ja estää käyttäjiä
+- Admin-käyttäjäksi pääsee kirjautumaan käyttäjänimellä `admin` ja salasanalla `admin`
 
-## Sovelluksen tila
+## Sovelluksen tila (loppupalautus)
 
-Sovelluksen ominaisuuksista suurin osa on toteutettu, mutta se ei ole vielä ihan viimeistelyä vaille valmis. 
-Admin-käyttäjän puuttumisen lisäksi erityisesti kuvaavat virheviestit ja palaute käyttäjän syötteille uupuvat monessa tapauksessa. 
-Tavoitteena on vielä toteuttaa suurin osa syötteiden validoinnista selainpuolen Javascriptilla. 
-Koodin laatua on samalla tarkoitus parantaa, mm. tehdä selvempi roolijako reittimetodien, bisneslogiikkaa pyörittävien kontrollerimetodien ja tietokantametodien välillä (eli selkiyttää MVC-rakennetta).
-Lisäksi ulkoasu tarvitsee viimeistelyä. 
+Sovelluksesta jäi loppupalautuksen kannalta joukko pieniä mutta melko tärkeitä ominaisuuksia tekemättä. 
+Admin-käyttäjällä ei ole sovelluksen moderointiin tarvittavia kykyjä, ja kaikkien transaktioiden näkeminen yhdellä sivulla on epäkäytännöllistä ilman
+rajaus- ja hakutoimintoja.
+Käyttäjät eivät myöskään voi poistaa tuotteita kaupoistaan.
+Kaupoilla oli alun perin tarkoitus olla kuvausteksti, mutta se jäi myös kiireen takia tekemättä. 
+Jatkokehitykseen jäi myös kauppojen profiilikuvat, joille oli jo paikka sovelluksen näkymissä.
+Ulkoasusta muutama kohta jäi myös viimeistelemättä. 
+
+Lopullinen versio tuli tehtyä melko kovalla kiireellä joten bugeja löytyy, olen parhaani mukaan testannut perustoiminnot mutta tämä kanssa pitkään
+ahkeroidessa ja lukkiutuneessa mielentilassa huomaamatta on jäänyt varmasti vaikka mitä.
