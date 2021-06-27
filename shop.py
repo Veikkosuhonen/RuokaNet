@@ -1,7 +1,8 @@
 from app import db
 import util
 import user_activity
-
+from flask import abort
+from error import ErrorMessage
 
 def get_shops(querystring, filter):
     """
@@ -49,7 +50,7 @@ def get_shop(id):
     """
     shop = db.session.execute("SELECT id, shopname, n_owners, creation_date FROM shops WHERE id = :id", {"id":id}).fetchone()
     if shop == None:
-        return 404
+        abort(404)
     products = db.session.execute(
         """SELECT products.id, items.itemname, products.price, shop_inventory.quantity 
         FROM items, products, shop_inventory 
@@ -75,21 +76,20 @@ def get_items():
     return db.session.execute("SELECT id, itemname FROM items").fetchall()
 
 
-def create_new(username, shopname):
+def create_new(shopname):
     """
     Creates a new shop with the name shopname and owner username. If a shop with the same name exists or the user doesn't exist, aborts and returns None,
     else returns the id of the new shop.
     """
+    next = "/users/" + username
     shop = db.session.execute("SELECT shopname FROM shops WHERE shopname = :name", {"name":shopname}).fetchone()
     print("creating " + shopname)
     if shop != None:
-        # Shopname taken
-        print("shopname taken")
-        return None
+        raise ErrorMessage(f"Shop name '{shopname}' is taken", next=next)
     shopid = db.session.execute("INSERT INTO shops (shopname, n_owners) VALUES (:name, 1) RETURNING id", {"name":shopname}).fetchone()[0]
-    userid = util.get_userid(username)
+    userid = util.get_userid(util.get_userid)
     if userid == None:
-        return None
+        abort(401) # should never happen
     db.session.execute("INSERT INTO shop_owners (userid, shopid) VALUES (:userid, :shopid)", {"userid":userid, "shopid":shopid})
     user_activity.add_activity(userid, f"You created {shopname}")
     db.session.commit()
@@ -104,9 +104,8 @@ def leave_shop(username, shopid):
     result = db.session.execute("DELETE FROM shop_owners WHERE userid = :userid AND shopid = :shopid RETURNING shopid", {"userid":userid, "shopid":shopid}).fetchone()
     if result == None:
         # Either no such shop exists or user is not an owner. 
-        return 404
+        abort(404)
     db.session.execute("UPDATE shops SET n_owners = n_owners - 1 WHERE id = :shopid", {"shopid": shopid})
     shopname = db.session.execute("SELECT shopname FROM shops WHERE id = :shopid", {"shopid":shopid}).fetchone()[0]
     user_activity.add_activity(userid, f"You left {shopname}")
     db.session.commit()
-    return 200

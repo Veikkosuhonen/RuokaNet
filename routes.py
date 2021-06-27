@@ -13,6 +13,7 @@ from product import get_products, add_product, change_product_price, delete_prod
 from stats import get_general_stats
 from transaction import get_transactions
 
+
 @app.route("/")
 def index():
     stats = get_general_stats()
@@ -42,9 +43,7 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        success = do_login(username, password)
-        if not success:
-            raise ErrorMessage("Invalid username or password", next="/login")
+        do_login(username, password)
         return redirect("/")
 
 
@@ -93,8 +92,6 @@ def shops():
 @app.route("/shops/<int:id>")
 def shop(id):
     shop = get_shop(id)
-    if shop == 404:
-        abort(404)
 
     # check if is owner and add the list of items to template
     isowner = False
@@ -113,9 +110,6 @@ def shop(id):
 @check_csrf
 def create_new_shop():
     shopid = create_new(session["username"], request.form["shopname"])
-    if shopid == None:
-        # Shopname taken
-        raise ErrorMessage(f"Error: shop name {request.form['shopname']} is taken", next="/users/" + session["username"])
     return redirect("/shops/" + str(shopid))
 
 
@@ -131,9 +125,7 @@ def products():
 @login_required
 @check_csrf
 def addproduct(shopid):
-    code = add_product(shopid, request.form["itemname"], request.form["price"])
-    if code != 200:
-        abort(code)
+    add_product(shopid, request.form["itemname"], request.form["price"])
     return redirect("/shops/" + str(shopid))
 
 
@@ -141,9 +133,7 @@ def addproduct(shopid):
 @login_required
 @check_csrf
 def changeproductprice(productid, shopid):
-    code = change_product_price(productid, request.form["newprice"])
-    if code != 200:
-        abort(code)
+    change_product_price(productid, request.form["newprice"])
     return redirect("/shops/" + str(shopid)) # shopid
 
 
@@ -151,9 +141,7 @@ def changeproductprice(productid, shopid):
 @login_required
 @check_csrf
 def deleteproduct(productid, shopid):
-    code = delete_product(productid, shopid)
-    if code != 200:
-        abort(code)
+    delete_product(productid, shopid)
     return redirect("/shops/" + str(shopid))
 
 
@@ -165,13 +153,7 @@ INVITE
 @check_csrf
 def inviteuser(shopid):
     username = request.form["receivername"]
-    code = invite(username, shopid)
-    if code != 200:
-        if code == 404:
-            raise ErrorMessage(f"User '{username}' not found", next="/shops/" + str(shopid))
-        elif code == 406:
-            raise ErrorMessage(f"User '{username}' already has an active invite to this shop", next="/shops/" + str(shopid))
-        abort(code)
+    invite(username, shopid)
     return redirect("/shops/" + str(shopid))
 
 
@@ -179,9 +161,7 @@ def inviteuser(shopid):
 @login_required
 @check_csrf
 def updateinvite(inviteid, action):
-    code = update_invite(inviteid, action)
-    if code != 200:
-        abort(code)
+    update_invite(inviteid, action)
     return redirect("/users/" + session["username"])
 
 
@@ -192,9 +172,7 @@ LEAVE SHOP
 @login_required
 @check_csrf
 def leaveshop(shopid):
-    code = leave_shop(session["username"], shopid)
-    if code != 200:
-        abort(code)
+    leave_shop(session["username"], shopid)
     return redirect("/shops/" + str(shopid))
 
 
@@ -217,9 +195,7 @@ BUY PRODUCT
 @login_required
 @check_csrf
 def buy(shopid, productid):
-    code = buy_product(productid)
-    if code != 200:
-        abort(code)
+    buy_product(productid)
     return redirect("/shops/" + str(shopid))
 
 
