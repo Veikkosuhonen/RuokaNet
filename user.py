@@ -14,7 +14,7 @@ def get_public_user(name):
     if u == None:
         return None
     userid, join_date = u
-    shops = shop.get_shops_owner_by(userid)
+    shops = shop.get_shops_owned_by(userid)
     return  {
         "username": name,
         "userid": userid,
