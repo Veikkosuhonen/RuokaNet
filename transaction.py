@@ -1,6 +1,7 @@
 from app import db
 import util
-
+from flask import abort
+from error import ErrorMessage
 
 def do_buy_transaction(productid, userid):
     product = db.session.execute( 
@@ -10,17 +11,18 @@ def do_buy_transaction(productid, userid):
         {"productid":productid}).fetchone()
 
     if product == None:
-        return 404
+        abort(404)
     shopid, itemid, price, quantity = product
+    next = "/shops/"+str(shopid)
     if quantity < 1: 
-        return 404
+        raise ErrorMessage("Product is out of stock", next=next)
     owns_shop = db.session.execute("SELECT * FROM shop_owners WHERE userid = :userid AND shopid = :shopid", {"userid":userid, "shopid":shopid}).fetchone()
     if owns_shop != None:
-        return 403 # not allowed to buy from self
+        raise ErrorMessage("You are not allowed to buy from yourself", next=next)
 
     buyer_balance = db.session.execute("SELECT balance FROM users WHERE id = :id",{"id":userid}).fetchone()[0]
     if buyer_balance < price:
-        return 403 # cannot afford
+        raise ErrorMessage(f"You cannot afford that (your wallet balance is {buyer_balance})", next=next)
 
     db.session.execute("UPDATE shop_inventory SET quantity = quantity - 1 WHERE shopid = :shopid AND itemid = :itemid",
         {"shopid":shopid,"itemid":itemid})
@@ -43,7 +45,6 @@ def do_buy_transaction(productid, userid):
         """INSERT INTO transactions (shopid, userid, itemid, amount, price, closetime) VALUES (:shopid, :userid, :itemid, 1, :price, NOW())""",
         {"shopid":shopid, "userid":userid, "itemid": itemid, "price":float(price)})
     db.session.commit()
-    return 200
 
 
 def get_transaction_activity(userid):
