@@ -27,13 +27,11 @@ AUTHENTICATION
 @app.route("/signup", methods=["GET","POST"])
 def signup():
     if request.method == "GET":
-        return render_template("signup.html", usernames=list(map(lambda x: x[1], users.get_users())))
+        return render_template("signup.html", usernames=list(map(lambda x: x[1], user.get_users())))
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        success = authentication.do_signup(username, password)
-        if not success:
-            raise ErrorMessage("Registration failed, invalid credentials", next="/signup")
+        authentication.do_signup(username, password)
         return redirect("/login")
     
 
