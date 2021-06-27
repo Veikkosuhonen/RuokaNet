@@ -14,7 +14,7 @@ def get_public_user(name):
     if u == None:
         return None
     userid, join_date = u
-    shops = shop.get_shops(name, "owner") 
+    shops = shop.get_shops_owner_by(userid)
     return  {
         "username": name,
         "userid": userid,
@@ -27,7 +27,7 @@ def get_private_user(name):
     userid = util.get_userid(name)
     if userid == None:
         return None
-    shops = shop.get_shops(name, "owner")
+    shops = shop.get_shops_owned_by(userid)
     balance, join_date = db.session.execute("SELECT balance, join_date FROM users WHERE id = :userid",{"userid":userid}).fetchone()
     inventory = db.session.execute("""
         SELECT items.itemname, user_inventory.quantity FROM items, user_inventory

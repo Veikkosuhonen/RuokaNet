@@ -102,3 +102,26 @@ def leave_shop(username, shopid):
     shopname = db.session.execute("SELECT shopname FROM shops WHERE id = :shopid", {"shopid":shopid}).fetchone()[0]
     user_activity.add_activity(userid, f"You left {shopname}")
     db.session.commit()
+
+
+def get_shops_owned_by(userid):
+    all_shops = db.session.execute("""
+    SELECT shops.id, shops.shopname, shops.n_owners, shops.creation_date FROM shops, shop_owners 
+    WHERE shops.id = shop_owners.shopid AND shop_owners.userid = :userid""", {"userid":userid}).fetchall()
+    
+    shop_owners = db.session.execute("SELECT shop_owners.shopid, users.username FROM users, shop_owners WHERE users.id = shop_owners.userid").fetchall()
+    # Form a list of unique shops each with a list of owners
+    shops = dict()
+    for s in all_shops:
+        shops[s[0]] = (s[0], s[1], list(), s[2], s[3])
+    for owner in shop_owners:
+        if owner[0] in shops.keys():
+            shops[owner[0]][2].append(owner[1])
+
+    return map(lambda s: {
+        "id":s[0],
+        "shopname":s[1],
+        "owners": s[2],
+        "n_owners": s[3],
+        "creation_date": s[4]
+    }, shops.values())

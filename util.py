@@ -12,12 +12,10 @@ def user_is(username):
     return False
 
 
-def owns_shop(id):
-    if not is_user():
-        return False
+def owns_shop(userid, shopid):
     owner = db.session.execute(
-        "SELECT users.username FROM users, shop_owners WHERE users.id = shop_owners.userid AND :shopid = shop_owners.shopid AND users.username = :username", 
-        {"shopid":id, "username":session["username"]}).fetchone()
+        "SELECT shop_owners.userid FROM shop_owners WHERE :userid= shop_owners.userid AND :shopid = shop_owners.shopid", 
+        {"userid":userid,"shopid":shopid}).fetchone()
     return owner != None
 
 

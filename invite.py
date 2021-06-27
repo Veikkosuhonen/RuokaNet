@@ -13,7 +13,7 @@ def invite(receivername, shopid):
     sendername = util.get_username()
     if sendername == None:
         abort(401)
-    if not util.owns_shop(shopid):
+    if not util.owns_shop(util.get_userid(sendername), shopid):
         abort(403)
     if sendername == receivername:
         raise ErrorMessage("Error: Cannot invite yourself", next=next)
@@ -25,7 +25,7 @@ def invite(receivername, shopid):
         {"receiverid":receiverid,"shopid":shopid}).fetchone()
     if is_invited != None:
         raise ErrorMessage(f"User '{receivername}' already has an active invite to this shop", next=next)
-    if util.owns_shop(receiverid):
+    if util.owns_shop(receiverid, shopid):
         raise ErrorMessage(f"Error: '{receivername}' is already an owner in this shop", next=next)
 
     senderid = util.get_userid(sendername)

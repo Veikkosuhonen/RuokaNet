@@ -19,7 +19,7 @@ def get_products():
 
 def add_product(shopid, itemname, price):
     next = "/shops/" + str(shopid)
-    if not util.owns_shop(shopid):
+    if not util.owns_shop(util.get_userid(util.get_username()), shopid):
         raise ErrorMessage("Unauthorized: you do not own this shop", next=next)
     itemid = db.session.execute("SELECT id FROM items WHERE itemname = :itemname",{"itemname":itemname}).fetchone()
     if itemid == None:

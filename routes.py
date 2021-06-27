@@ -66,11 +66,11 @@ def users():
 @app.route("/users/<string:name>")
 def user_view(name):
     if util.user_is(name):
-        user = user.get_private_user(name)
-        return render_template("private_user.html", user=user)
+        user_data = user.get_private_user(name)
+        return render_template("private_user.html", user=user_data)
     else: 
-        user = user.get_public_user(name)
-        return render_template("public_user.html", user=user)
+        user_data = user.get_public_user(name)
+        return render_template("public_user.html", user=user_data)
 
 
 """
