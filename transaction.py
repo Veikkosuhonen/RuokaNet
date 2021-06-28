@@ -34,12 +34,12 @@ def do_buy_transaction(productid, userid):
         db.session.execute("UPDATE user_inventory SET quantity = quantity + 1 WHERE userid = :userid AND itemid = :itemid",
             {"userid":userid,"itemid":itemid})
 
-    b = db.session.execute("UPDATE users SET balance = balance - 1.0 WHERE id = :userid RETURNING balance", {"price":float(price),"userid":userid}).fetchone()
+    b = db.session.execute("UPDATE users SET balance = balance - :price WHERE id = :userid RETURNING balance", {"price":float(price),"userid":userid}).fetchone()
     b = db.session.execute(
         """UPDATE users SET balance = balance + 
-        :price / (SELECT COUNT(users.id) FROM users, shop_owners WHERE shop_owners.userid = users.id AND shop_owners.shopid = :shopid)
-        FROM shop_owners WHERE shop_owners.userid = :userid AND shop_owners.shopid = :shopid RETURNING balance""",
-        {"shopid":shopid, "price":float(price), "userid":userid}).fetchall()
+        :price / (SELECT COUNT(userid) FROM shop_owners WHERE shop_owners.shopid = :shopid)
+        FROM shop_owners WHERE users.id = shop_owners.userid AND shop_owners.shopid = :shopid RETURNING balance""",
+        {"shopid":shopid, "price":float(price)}).fetchall()
 
     db.session.execute(
         """INSERT INTO transactions (shopid, userid, itemid, amount, price, closetime) VALUES (:shopid, :userid, :itemid, 1, :price, NOW())""",
